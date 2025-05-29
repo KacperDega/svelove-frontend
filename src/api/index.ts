@@ -17,7 +17,6 @@ export async function apiRequest<T>(
   });
 
   if (response.status === 401) {
-    window.location.href = "/";
     throw new Error("Unauthorized");
   }
 
