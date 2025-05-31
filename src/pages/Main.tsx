@@ -1,8 +1,11 @@
 import React from 'react';
 import logo from '../assets/logo.svg';
 import '../App.css';
+import { useNavigate } from "react-router-dom";
 
 const Main = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="App">
       <header className="App-header">
@@ -18,7 +21,10 @@ const Main = () => {
         >
           Learn React
         </a>
-        <button className="btn btn-primary">Primary</button>
+        <div className='space-x-4'>
+          <button className="btn btn-primary" onClick={() => navigate("/login")}>Login</button>
+          <button className="btn btn-primary" onClick={() => navigate("/register")}>Register</button>
+        </div>
       </header>
     </div>
   );
