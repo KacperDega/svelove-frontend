@@ -3,48 +3,105 @@ import { register, login } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
 import logo from "../assets/logo1.png";
+import { Preference, Sex } from "../types/user";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [step, setStep] = useState(1);
 
   const [formData, setFormData] = useState({
     username: "",
     login: "",
     password: "",
-    sex: "",
-    preference: "",
+    sex: "" as Sex,
+    age: "",
+    localization: "",
+    description: "",
+    preference: "" as Preference,
+    age_min: "",
+    age_max: "",
   });
 
   const [error, setError] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  
+  const previousStep = () => {
+    setStep(1);
+  };
+
+  const nextStep = () => {
+    const { username, login, password, sex, age } = formData;
+    if (![username, login, password, sex, age].every((val) => val.trim())) {
+      setError("Uzupełnij wszystkie pola.");
+      return;
+    }
+    if (Number(age) < 18 || Number(age) > 100) {
+      setError("Wiek musi być między 18 a 100.");
+      return;
+    }
+    setError(null);
+    setStep(2);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    const {
+      username,
+      login: loginValue,
+      password,
+      sex,
+      age,
+      localization,
+      description,
+      preference,
+      age_min,
+      age_max,
+    } = formData;
 
-    const { username, login: loginValue, password, sex, preference } = formData;
     if (
-      ![username, loginValue, password, sex, preference].every((val) =>
-        val.trim()
-      )
+      ![
+        localization,
+        description,
+        preference,
+        age_min,
+        age_max,
+      ].every((val) => val.trim())
     ) {
-      setError("Wszystkie pola są wymagane.");
+      setError("Uzupełnij wszystkie pola.");
+      return;
+    }
+
+    if (
+      Number(age_min) < 18 ||
+      Number(age_max) > 100 ||
+      Number(age_min) > Number(age_max)
+    ) {
+      setError("Zakres wieku musi być poprawny (18-100).");
       return;
     }
 
     try {
-      await register(formData);
+      await register({
+        username,
+        login: loginValue,
+        password,
+        sex: sex as Sex,
+        preference: preference as Preference,
+        description,
+        localization: toPascalCase(localization),
+        age: Number(age),
+        age_min: Number(age_min),
+        age_max: Number(age_max),
+      });
 
-      // TODO: automatyczny log-in
       const response = await login(loginValue, password);
       localStorage.setItem("jwt", response.token);
-
       navigate("/dashboard");
     } catch (err: any) {
       setError(`Error: ${err.message || "Błąd rejestracji"}`);
@@ -55,82 +112,160 @@ const Register = () => {
     setShowAlert(false);
     if (!error) return;
 
-    const appearTimeout = setTimeout(() => setShowAlert(true), 10);
-    const disappearTimeout = setTimeout(() => setShowAlert(false), 4000);
-
+    const appear = setTimeout(() => setShowAlert(true), 10);
+    const disappear = setTimeout(() => setShowAlert(false), 4000);
     return () => {
-      clearTimeout(appearTimeout);
-      clearTimeout(disappearTimeout);
+      clearTimeout(appear);
+      clearTimeout(disappear);
     };
   }, [error]);
 
   return (
     <div className="grid grid-rows-[1fr,auto,1fr] h-screen">
       <div className="flex items-end justify-center">
-        <img src={logo} alt="Logo" className="object-contain" />
+        <img src={logo} alt="Logo" className="object-contain h-24" />
       </div>
 
       <div className="flex justify-center">
-        <div className="text-center flex flex-col space-y-4">
-          <h3 className="text-2xl font-semibold">Rejestracja</h3>
-          <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
-            <input
-              type="text"
-              name="username"
-              placeholder="Nazwa użytkownika"
-              value={formData.username}
-              onChange={handleChange}
-              className="input input-bordered"
-              required
-            />
-            <input
-              type="text"
-              name="login"
-              placeholder="Login"
-              value={formData.login}
-              onChange={handleChange}
-              className="input input-bordered"
-              required
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Hasło"
-              value={formData.password}
-              onChange={handleChange}
-              className="input input-bordered"
-              required
-            />
-            <select
-              name="sex"
-              value={formData.sex}
-              onChange={handleChange}
-              className="select select-bordered"
-              required
-            >
-              <option value="">Płeć</option>
-              <option value="Male">Mężczyzna</option>
-              <option value="Female">Kobieta</option>
-              <option value="Other">Inna</option>
-            </select>
-            <select
-              name="preference"
-              value={formData.preference}
-              onChange={handleChange}
-              className="select select-bordered"
-              required
-            >
-              <option value="">Preferencje</option>
-              <option value="Men">Mężczyźni</option>
-              <option value="Women">Kobiety</option>
-              <option value="Both">Oboje</option>
-              <option value="Other">Inne</option>
-            </select>
-            <input
-              type="submit"
-              className="btn btn-primary"
-              value="Zarejestruj się"
-            />
+        <div className="text-center flex flex-col space-y-4 w-full max-w-md">
+          <h3 className="text-2xl font-semibold">
+            {step === 1 ? "Rejestracja - krok 1" : "Rejestracja - krok 2"}
+          </h3>
+          <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+            {step === 1 ? (
+              <>
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="Nazwa użytkownika"
+                  value={formData.username}
+                  onChange={handleChange}
+                  className="input input-bordered"
+                  required
+                />
+                <input
+                  type="text"
+                  name="login"
+                  placeholder="Login"
+                  value={formData.login}
+                  onChange={handleChange}
+                  className="input input-bordered"
+                  required
+                />
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Hasło"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="input input-bordered"
+                  required
+                />
+                <select
+                  name="sex"
+                  value={formData.sex}
+                  onChange={handleChange}
+                  className="select select-bordered"
+                  required
+                >
+                  <option value="">Płeć</option>
+                  <option value="Male">Mężczyzna</option>
+                  <option value="Female">Kobieta</option>
+                  <option value="Other">Inna</option>
+                </select>
+                <input
+                  type="number"
+                  name="age"
+                  placeholder="Wiek"
+                  value={formData.age}
+                  onChange={handleChange}
+                  className="input input-bordered"
+                  required
+                />
+                <div className="flex justify-between space-x-2">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => navigate("/")}
+                  >
+                    Powrót
+                  </button>
+                <button
+                  type="button"
+                  className="btn btn-primary px-14"
+                  onClick={nextStep}
+                >
+                  Dalej
+                </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <input
+                  type="text"
+                  name="localization"
+                  placeholder="Lokalizacja"
+                  value={formData.localization}
+                  onChange={handleChange}
+                  className="input input-bordered"
+                  required
+                />
+                <textarea
+                  name="description"
+                  placeholder="Opis"
+                  value={formData.description}
+                  onChange={handleChange}
+                  className="textarea textarea-bordered"
+                  maxLength={225}
+                  required
+                />
+                <select
+                  name="preference"
+                  value={formData.preference}
+                  onChange={handleChange}
+                  className="select select-bordered"
+                  required
+                >
+                  <option value="">Preferencje</option>
+                  <option value="Men">Mężczyźni</option>
+                  <option value="Women">Kobiety</option>
+                  <option value="Both">Oboje</option>
+                  <option value="Other">Inne</option>
+                </select>
+                <input
+                  type="number"
+                  name="age_min"
+                  placeholder="Minimalny wiek partnera"
+                  value={formData.age_min}
+                  onChange={handleChange}
+                  className="input input-bordered"
+                  required
+                />
+                <input
+                  type="number"
+                  name="age_max"
+                  placeholder="Maksymalny wiek partnera"
+                  value={formData.age_max}
+                  onChange={handleChange}
+                  className="input input-bordered"
+                  required
+                />
+                <div className="flex justify-between space-x-2">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={previousStep}
+                  >
+                    Powrót
+                  </button>
+                  <input
+                    type="submit"
+                    className="btn btn-primary"
+                    value="Zarejestruj się"
+                  />
+                </div>
+              </>
+            )}
           </form>
         </div>
       </div>
@@ -143,11 +278,7 @@ const Register = () => {
           className={`
             alert alert-error alert-soft fixed bottom-4 right-4 shadow-lg max-w-sm z-50
             transition-all duration-500 ease-in-out
-            ${
-              showAlert
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-6 pointer-events-none"
-            }
+            ${showAlert ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6 pointer-events-none"}
           `}
         >
           <span>{error}</span>
@@ -156,5 +287,15 @@ const Register = () => {
     </div>
   );
 };
+
+const toPascalCase = (text: string): string => {
+  return text
+    .toLowerCase()
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
 
 export default Register;

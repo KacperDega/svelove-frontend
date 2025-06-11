@@ -7,11 +7,20 @@ export const login = (login: string, password: string) => {
   });
 };
 
-export const register = (register_data: {
+export type RegisterRequestDTO = {
   username: string;
   login: string;
   password: string;
-}) => {
+  sex: "Male" | "Female" | "Other";
+  preference: "Men" | "Women" | "Both" | "Other";
+  description: string;
+  age: number;
+  age_min: number;
+  age_max: number;
+  localization: string;
+};
+
+export const register = (register_data: RegisterRequestDTO) => {
   return apiRequest<{ message: string }>("/register", {
     method: "POST",
     body: JSON.stringify(register_data),
