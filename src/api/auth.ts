@@ -18,6 +18,7 @@ export type RegisterRequestDTO = {
   age_min: number;
   age_max: number;
   localization: string;
+  hobbies: string[];
 };
 
 export const register = (register_data: RegisterRequestDTO) => {

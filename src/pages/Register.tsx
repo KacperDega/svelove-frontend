@@ -4,10 +4,27 @@ import { useNavigate } from "react-router-dom";
 import "../index.css";
 import logo from "../assets/logo1.png";
 import { Preference, Sex } from "../types/user";
+import Select from 'react-select';
+import {hobbies as hobbyOptions } from "../types/Hobby";
+
+const toPascalCase = (text: string): string => {
+  return text
+    .toLowerCase()
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
 
 const Register = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+
+  const [selectedHobbies, setSelectedHobbies] = useState<{ label: string; value: string }[]>([]);
+  const options = hobbyOptions.map((hobby) => ({
+    value: hobby,
+    label: hobby,
+  }));
 
   const [formData, setFormData] = useState({
     username: "",
@@ -49,6 +66,11 @@ const Register = () => {
     setStep(2);
   };
 
+  const handleHobbyChange = (selected: any) => {
+    setSelectedHobbies(selected || []);
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const {
@@ -86,8 +108,14 @@ const Register = () => {
       return;
     }
 
+    if (selectedHobbies.length === 0) {
+      setError("Wybierz przynajmniej jedno hobby.");
+      return;
+    }
+
+
     try {
-      await register({
+      const payload = {
         username,
         login: loginValue,
         password,
@@ -98,7 +126,12 @@ const Register = () => {
         age: Number(age),
         age_min: Number(age_min),
         age_max: Number(age_max),
-      });
+        hobbies: selectedHobbies.map((h) => h.value),
+      };
+
+      console.log("Rejestracja payload:", JSON.stringify(payload, null, 2));
+
+      await register(payload);
 
       const response = await login(loginValue, password);
       localStorage.setItem("jwt", response.token);
@@ -250,6 +283,14 @@ const Register = () => {
                   className="input input-bordered"
                   required
                 />
+                <Select
+                  className=" text-primary-content"
+                  options={options}
+                  value={selectedHobbies}
+                  onChange={handleHobbyChange}
+                  isMulti={true}
+                  placeholder="Wybierz hobby"
+                />
                 <div className="flex justify-between space-x-2">
                   <button
                     type="button"
@@ -287,15 +328,5 @@ const Register = () => {
     </div>
   );
 };
-
-const toPascalCase = (text: string): string => {
-  return text
-    .toLowerCase()
-    .split(" ")
-    .filter(Boolean)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-};
-
 
 export default Register;
