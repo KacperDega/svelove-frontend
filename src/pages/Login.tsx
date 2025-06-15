@@ -60,8 +60,8 @@ const Login = () => {
       </div>
 
       <div className="flex justify-center">
-        <div className="text-center flex flex-col space-y-4">
-          <h3 className="text-2xl font-semibold">Logowanie</h3>
+          <div className="bg-neutral shadow-md rounded-xl p-6 w-full max-w-md border border-secondary text-center flex flex-col space-y-4">
+          <h3 className="text-3xl font-semibold">Logowanie</h3>
           <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
             <div>
               <label htmlFor="login" className="mr-6">

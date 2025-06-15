@@ -160,8 +160,8 @@ const Register = () => {
       </div>
 
       <div className="flex justify-center">
-        <div className="text-center flex flex-col space-y-4 w-full max-w-md">
-          <h3 className="text-2xl font-semibold">
+        <div className="bg-neutral shadow-md rounded-xl p-6 w-full max-w-md border border-secondary text-center flex flex-col space-y-4">
+          <h3 className="text-3xl font-semibold">
             {step === 1 ? "Rejestracja - krok 1" : "Rejestracja - krok 2"}
           </h3>
           <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
