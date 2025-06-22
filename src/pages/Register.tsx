@@ -3,9 +3,9 @@ import { register, login } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
 import logo from "../assets/logo1.png";
-import { Preference, Sex } from "../types/user";
+import { Preference, Sex } from "../types/enums";
 import Select from 'react-select';
-import {hobbies as hobbyOptions } from "../types/Hobby";
+import {hobbies as hobbyOptions } from "../types/enums";
 
 const toPascalCase = (text: string): string => {
   return text
