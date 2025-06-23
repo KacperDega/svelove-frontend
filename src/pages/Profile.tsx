@@ -1,36 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { apiRequest } from "../api/index";
-
-interface UserProfileDTO {
-  username: string;
-  login: string;
-  sex: string;
-  preference: string;
-  hobbies: string[];
-  description: string;
-  localization: string;
-  age: number;
-  age_min: number;
-  age_max: number;
-}
-
-const emptyProfile: UserProfileDTO = {
-  username: "",
-  login: "",
-  sex: "",
-  preference: "",
-  hobbies: [],
-  description: "",
-  localization: "",
-  age: 0,
-  age_min: 0,
-  age_max: 0,
-};
+import { useNavigate } from "react-router-dom";
+import { UserProfileDTO, emptyProfile } from "../types/UserProfileDTO";
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<UserProfileDTO>(emptyProfile);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
 
   const photos = [
     "https://picsum.photos/800/500",
@@ -125,6 +103,15 @@ const Profile: React.FC = () => {
             
           </div>
         </div>
+      </div>
+
+      <div className="flex justify-center">
+        <button
+          className="btn btn-secondary btn-outline w-full"
+          onClick={() => navigate("/profile/edit")}
+        >
+          Edytuj profil
+        </button>
       </div>
 
       {error && (
