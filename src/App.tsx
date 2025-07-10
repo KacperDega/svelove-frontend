@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import ProfilePage from './pages/Profile'
 import EditProfile from './pages/EditProfile'
+import Matches from './pages/Matches';
 
 const titleMap: Record<string, string> = {
   '/': 'Strona główna | svelove',
@@ -15,6 +16,7 @@ const titleMap: Record<string, string> = {
   '/dashboard': 'Panel użytkownika | svelove',
   '/profile': "Profil | svelove",
   '/profile/edit': "Edytuj profil | svelove",
+  '/matches': "Dopasowania | svelove",
 };
 
 function TitleUpdater() {
@@ -38,6 +40,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/edit" element={<EditProfile />} />
+        <Route path='/matches' element={<Matches/>} />
       </Routes>
     </BrowserRouter>
   );
