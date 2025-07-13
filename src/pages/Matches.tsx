@@ -1,110 +1,157 @@
-import React, { useState } from 'react';
-import Navbar from '../components/Navbar';
-import { Sex, Preference } from '../types/enums';
+import React, { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
+import { Sex, Preference } from "../types/enums";
+import { apiRequest } from "../api/index";
+
+interface MatchProfile {
+  id: number;
+  username: string;
+  sex: Sex;
+  age: number;
+  localization: string;
+  preference: Preference;
+  hobbies: string[];
+  description: string;
+}
 
 const translateSex = (sex: Sex) => {
   switch (sex) {
     case Sex.Male:
-      return 'Mężczyzna';
+      return "Mężczyzna";
     case Sex.Female:
-      return 'Kobieta';
-    case Sex.Other:
+      return "Kobieta";
     default:
-      return 'Inna / Nieokreślona';
+      return "Inna / Nieokreślona";
   }
 };
 
 const translatePreference = (preference: Preference) => {
   switch (preference) {
     case Preference.Men:
-      return 'Mężczyzn';
+      return "Mężczyzn";
     case Preference.Women:
-      return 'Kobiet';
+      return "Kobiet";
     case Preference.Both:
-      return 'Mężczyzn i Kobiet';
-    case Preference.Other:
+      return "Mężczyzn i Kobiet";
     default:
-      return 'Inne / Brak preferencji';
+      return "Inne / Brak preferencji";
   }
 };
 
-
-const profiles = [
-  {
-    id: 1,
-    username: "Anna",
-    sex: Sex.Female,
-    age: 27,
-    localization: "Warszawa",
-    preference: Preference.Men,
-    hobbies: ["Sztuka", "Podróże", "Muzyka"],
-    description: "Miłośniczka sztuki współczesnej, uwielbia podróże po Europie i słuchać jazzu w wolnym czasie."
-  },
-  {
-    id: 2,
-    username: "Kasia",
-    sex: Sex.Female,
-    age: 30,
-    localization: "Kraków",
-    preference: Preference.Men,
-    hobbies: ["Kino", "Fitness", "Góry"],
-    description: "Filmowa pasjonatka, która w weekendy zdobywa tatrzańskie szczyty i testuje nowe przepisy fit."
-  },
-  {
-    id: 3,
-    username: "Julia",
-    sex: Sex.Female,
-    age: 25,
-    localization: "Gdańsk",
-    preference: Preference.Men,
-    hobbies: ["Technologia", "Gotowanie", "Książki"],
-    description: "Frontend developerka z pasją do kuchni włoskiej i literatury fantasy."
-  }
-];
-
 const Matches = () => {
-  const [index, setIndex] = useState(0);
-  const user = profiles[index];
+  const [matches, setMatches] = useState<MatchProfile[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [likeLoading, setLikeLoading] = useState(false);
 
-  const handleNext = () => {
-    setIndex((prev) => (prev + 1) % profiles.length);
+  const fetchMatches = async () => {
+    try {
+      const data = await apiRequest<MatchProfile[]>("/matches/potential");
+      setMatches((prev) => [...prev, ...data]);
+    } catch (e) {
+      setError("Błąd ładowania dopasowań.");
+    }
   };
 
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <div className="flex items-center justify-center min-h-screen bg-base-100 px-4 py-8">
-        <div className="card w-full max-w-2xl bg-neutral shadow-2xl border border-secondary">
-          <figure className="h-[550px] overflow-hidden">
-            <img
-              src={`https://thispersondoesnotexist.com`}
-              alt={user.username}
-              className="object-cover w-full h-full"
-            />
-          </figure>
-          <div className="card-body">
-            <h2 className="card-title text-3xl text-primary flex items-end gap-2">
-              {user.username}, {user.age}
-              <span className="text-primary text-lg">
-                ({translateSex(user.sex)} →{" "}
-                {translatePreference(user.preference)})
-              </span>
-            </h2>
+  useEffect(() => {
+    fetchMatches().finally(() => setLoading(false));
+  }, []);
 
-            <p className="text-lg">
-              <strong className="text-primary">Miasto:</strong> {user.localization}
-            </p>
-            <p className="text-lg">
-              <strong className="text-primary">Zainteresowania:</strong> {user.hobbies.join(", ")}
-            </p>
-            <p className="text-lg font-medium italic mt-2 text-secondary">{user.description}</p>
-            <div className="card-actions justify-between mt-6 mx-4">
-              <button onClick={handleNext} className="btn btn-outline btn-secondary btn-wide text-lg">Pomiń ▷▷</button>
-              <button onClick={handleNext} className="btn btn-primary btn-wide text-lg">Polub ✓</button>
+  const handleSkip = () => {
+    setMatches((prev) => prev.slice(1));
+    if (matches.length < 6) fetchMatches();
+  };
+
+  const handleLike = async () => {
+    const likedUser = matches[0];
+    setLikeLoading(true);
+    try {
+      await apiRequest<string>(`/matches/like/${likedUser.id}`, { method: "POST" });
+      handleSkip();
+    } catch (e) {
+      setError("BŁĄD: Nie udało się polubić.");
+    } finally {
+    setLikeLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
+
+  const current = matches[0];
+
+  return (
+    <div className="flex flex-col h-dvh">
+      <Navbar />
+      <div className="flex flex-1 items-center justify-center bg-base-100 px-4 py-8">
+        {current ? (
+          <div className="card w-full max-w-2xl bg-neutral shadow-2xl border border-secondary">
+            <figure className="h-[550px] overflow-hidden">
+              <img
+                src="https://thispersondoesnotexist.com"
+                alt={current.username}
+                className="object-cover w-full h-full"
+              />
+            </figure>
+            <div className="card-body">
+              <h2 className="card-title text-3xl text-primary flex items-end gap-2">
+                {current.username}, {current.age}
+                <span className="text-primary text-lg">
+                  ({translateSex(current.sex)} → {translatePreference(current.preference)})
+                </span>
+              </h2>
+
+              <p className="text-lg">
+                <strong className="text-primary">Miasto:</strong> {current.localization}
+              </p>
+              <p className="text-lg">
+                <strong className="text-primary">Zainteresowania:</strong>{" "}
+                {current.hobbies.join(", ")}
+              </p>
+              <p className="text-lg font-medium italic mt-2 text-secondary">
+                {current.description}
+              </p>
+
+              <div className="card-actions justify-between mt-6 mx-4">
+                <button
+                  onClick={handleSkip}
+                  disabled={likeLoading}
+                  className={`btn btn-outline btn-secondary btn-wide text-lg ${likeLoading ? "opacity-50 pointer-events-none" : ""}`}
+                >
+                  Pomiń ▷▷
+                </button>
+                <button
+                  onClick={handleLike}
+                  disabled={likeLoading}
+                  className={`btn btn-primary btn-wide text-lg ${likeLoading ? "opacity-50 pointer-events-none" : ""}`}
+                >
+                  Polub ✓
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center text-center px-4">
+            <div className="text-6xl mb-4">😔</div>
+            <h2 className="text-2xl font-semibold text-primary mb-2">Brak nowych dopasowań</h2>
+            <p className="text-lg text-base-content">
+              Wygląda na to, że nie ma więcej osób do wyświetlenia.<br />
+              Spróbuj ponownie za jakiś czas lub zaktualizuj swoje preferencje!
+            </p>
+          </div>
+        )}
       </div>
+
+      {error && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 alert alert-error max-w-md mx-auto mt-8 z-50">
+          <span>{error}</span>
+        </div>
+      )}
     </div>
   );
 };
