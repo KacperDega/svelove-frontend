@@ -1,0 +1,37 @@
+name: Trigger Main Repo Sync
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 16 * * *" # Runs every day at 6 PM CET (4 PM UTC during CEST)
+
+env:
+  SUBMODULE_NAME: "Frontend"
+
+jobs:
+  trigger-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          
+      - name: Update submodules to the latest commit
+        run: git submodule update --remote --merge
+        
+      - name: Trigger main repository update
+        run: |
+          curl -X POST \
+          -H "Authorization: token ${{ secrets.PAT_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/KacperDega/Svelove/dispatches \
+          -d "{
+          \"event_type\": \"submodule-main-updated\",
+          \"client_payload\": {
+          \"submodule\": \"$SUBMODULE_NAME\",
+          \"commit\": \"$GITHUB_SHA\"
+          }
+          }"
+          
