@@ -4,8 +4,9 @@ import { useNavigate } from "react-router-dom";
 import "../index.css";
 import logo from "../assets/logo1.png";
 import { Preference, Sex } from "../types/enums";
-import Select from 'react-select';
-import {hobbies as hobbyOptions } from "../types/enums";
+import Select from "react-select";
+import { hobbies as hobbyOptions } from "../types/enums";
+import PhotoUploader from "../components/PhotoUploader";
 
 const toPascalCase = (text: string): string => {
   return text
@@ -39,6 +40,8 @@ const Register = () => {
     age_max: "",
   });
 
+  const [photos, setPhotos] = useState<(File | string)[]>([]);
+
   const [error, setError] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(false);
 
@@ -49,10 +52,11 @@ const Register = () => {
   };
   
   const previousStep = () => {
-    setStep(1);
+    setStep((prev) => prev - 1);
   };
 
   const nextStep = () => {
+    if (step === 1) {
     const { username, login, password, sex, age } = formData;
     if (![username, login, password, sex, age].every((val) => val.trim())) {
       setError("Uzupełnij wszystkie pola.");
@@ -62,39 +66,12 @@ const Register = () => {
       setError("Wiek musi być między 18 a 100.");
       return;
     }
-    setError(null);
-    setStep(2);
-  };
+    }
 
-  const handleHobbyChange = (selected: any) => {
-    setSelectedHobbies(selected || []);
-  };
-
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const {
-      username,
-      login: loginValue,
-      password,
-      sex,
-      age,
-      localization,
-      description,
-      preference,
-      age_min,
-      age_max,
-    } = formData;
-
-    if (
-      ![
-        localization,
-        description,
-        preference,
-        age_min,
-        age_max,
-      ].every((val) => val.trim())
-    ) {
+    if (step === 2) {
+      const { localization, description, preference, age_min, age_max } =
+        formData;
+      if (![localization, description, preference, age_min, age_max].every((v) => v.trim())) {
       setError("Uzupełnij wszystkie pola.");
       return;
     }
@@ -110,6 +87,23 @@ const Register = () => {
 
     if (selectedHobbies.length === 0) {
       setError("Wybierz przynajmniej jedno hobby.");
+        return;
+      }
+    }
+
+    setError(null);
+    setStep((prev) => prev + 1);
+  };
+
+  const handleHobbyChange = (selected: any) => {
+    setSelectedHobbies(selected || []);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (photos.length === 0) {
+      setError("Dodaj przynajmniej jedno zdjęcie.");
       return;
     }
 
@@ -127,6 +121,7 @@ const Register = () => {
         age_min: Number(age_min),
         age_max: Number(age_max),
         hobbies: selectedHobbies.map((h) => h.value),
+        photos,
       };
 
       console.log("Rejestracja payload:", JSON.stringify(payload, null, 2));
@@ -160,12 +155,20 @@ const Register = () => {
       </div>
 
       <div className="flex justify-center">
-        <div className="bg-neutral shadow-md rounded-xl p-6 w-full max-w-md border border-secondary text-center flex flex-col space-y-4">
+        <div   className={`bg-neutral shadow-md rounded-xl p-6 w-full 
+                      ${step === 3 ? "max-w-full sm:max-w-3xl" : "max-w-md"}
+                      border border-secondary text-center flex flex-col space-y-4`}>
           <h3 className="text-3xl font-semibold">
-            {step === 1 ? "Rejestracja - krok 1" : "Rejestracja - krok 2"}
+            {step === 1 && "Rejestracja - krok 1"}
+            {step === 2 && "Rejestracja - krok 2"}
+            {step === 3 && "Rejestracja - zdjęcia"}
           </h3>
-          <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-            {step === 1 ? (
+
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col space-y-4"
+          >
+            {step === 1 && (
               <>
                 <input
                   type="text"
@@ -232,7 +235,9 @@ const Register = () => {
                 </button>
                 </div>
               </>
-            ) : (
+            )}
+
+            {step === 2 && (
               <>
                 <input
                   type="text"
@@ -292,6 +297,29 @@ const Register = () => {
                   placeholder="Wybierz hobby"
                 />
                 <div className="flex justify-between space-x-2">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={previousStep}
+                  >
+                    Powrót
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={nextStep}
+                  >
+                    Dalej
+                  </button>
+                </div>
+              </>
+            )}
+
+            {step === 3 && (
+              <>
+                <PhotoUploader maxFiles={5} onChange={setPhotos} />
+
+                <div className="flex justify-between space-x-2 mt-4">
                   <button
                     type="button"
                     className="btn btn-secondary"
