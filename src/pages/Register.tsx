@@ -5,27 +5,20 @@ import "../index.css";
 import logo from "../assets/logo1.png";
 import { Preference, Sex } from "../types/enums";
 import Select from "react-select";
-import { hobbies as hobbyOptions } from "../types/enums";
 import PhotoUploader from "../components/PhotoUploader";
-
-const toPascalCase = (text: string): string => {
-  return text
-    .toLowerCase()
-    .split(" ")
-    .filter(Boolean)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-};
+import { getHobbies, HobbyDTO } from "../api/hobbies";
+import { getCities, CityDTO } from "../api/cities";
 
 const Register = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
-  const [selectedHobbies, setSelectedHobbies] = useState<{ label: string; value: string }[]>([]);
-  const options = hobbyOptions.map((hobby) => ({
-    value: hobby,
-    label: hobby,
-  }));
+  const [hobbies, setHobbies] = useState<HobbyDTO[]>([]);
+  const [cities, setCities] = useState<CityDTO[]>([]);
+
+  const [selectedHobbies, setSelectedHobbies] = useState<
+    { label: string; value: number }[]
+  >([]);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -44,6 +37,23 @@ const Register = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(false);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [hobbiesData, citiesData] = await Promise.all([
+          getHobbies(),
+          getCities(),
+        ]);
+        setHobbies(hobbiesData);
+        setCities(citiesData);
+      } catch (err: any) {
+        console.error("Data loading error:", err);
+        setError("Nie udało się połączyć. Spróbuj ponownie później.");
+      }
+    };
+    loadData();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -107,7 +117,6 @@ const Register = () => {
       return;
     }
 
-
     try {
       const payload = {
         username,
@@ -155,9 +164,11 @@ const Register = () => {
       </div>
 
       <div className="flex justify-center">
-        <div   className={`bg-neutral shadow-md rounded-xl p-6 w-full 
+        <div
+          className={`bg-neutral shadow-md rounded-xl p-6 w-full 
                       ${step === 3 ? "max-w-full sm:max-w-3xl" : "max-w-md"}
-                      border border-secondary text-center flex flex-col space-y-4`}>
+                      border border-secondary text-center flex flex-col space-y-4`}
+        >
           <h3 className="text-3xl font-semibold">
             {step === 1 && "Rejestracja - krok 1"}
             {step === 2 && "Rejestracja - krok 2"}
@@ -170,6 +181,7 @@ const Register = () => {
           >
             {step === 1 && (
               <>
+                {/* KROK 1 */}
                 <input
                   type="text"
                   name="username"
@@ -239,15 +251,23 @@ const Register = () => {
 
             {step === 2 && (
               <>
-                <input
-                  type="text"
+                {/* KROK 2 */}
+                <select
                   name="localization"
                   placeholder="Lokalizacja"
                   value={formData.localization}
                   onChange={handleChange}
-                  className="input input-bordered"
+                  className="select select-bordered"
                   required
-                />
+                >
+                  <option value="">Wybierz miasto</option>
+                  {cities.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+
                 <textarea
                   name="description"
                   placeholder="Opis"
@@ -257,6 +277,7 @@ const Register = () => {
                   maxLength={225}
                   required
                 />
+
                 <select
                   name="preference"
                   value={formData.preference}
@@ -270,6 +291,7 @@ const Register = () => {
                   <option value="Both">Oboje</option>
                   <option value="Other">Inne</option>
                 </select>
+
                 <input
                   type="number"
                   name="age_min"
@@ -288,14 +310,19 @@ const Register = () => {
                   className="input input-bordered"
                   required
                 />
+
                 <Select
-                  className=" text-primary-content"
-                  options={options}
+                  className="text-primary-content"
+                  options={hobbies.map((h) => ({
+                    value: h.id,
+                    label: h.label,
+                  }))}
                   value={selectedHobbies}
                   onChange={handleHobbyChange}
                   isMulti={true}
                   placeholder="Wybierz hobby"
                 />
+
                 <div className="flex justify-between space-x-2">
                   <button
                     type="button"
@@ -317,6 +344,7 @@ const Register = () => {
 
             {step === 3 && (
               <>
+                {/* KROK 3 */}
                 <PhotoUploader maxFiles={5} onChange={setPhotos} />
 
                 <div className="flex justify-between space-x-2 mt-4">
@@ -347,8 +375,11 @@ const Register = () => {
           className={`
             alert alert-error alert-soft fixed bottom-4 right-4 shadow-lg max-w-sm z-50
             transition-all duration-500 ease-in-out
-            ${showAlert ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6 pointer-events-none"}
-          `}
+            ${
+              showAlert
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-6 pointer-events-none"
+            }`}
         >
           <span>{error}</span>
         </div>
