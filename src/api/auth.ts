@@ -15,17 +15,29 @@ export type RegisterRequestDTO = {
   preference: "Men" | "Women" | "Both" | "Other";
   description: string;
   age: number;
-  age_min: number;
-  age_max: number;
-  localization: string;
-  hobbies: string[];
+  ageMin: number;
+  ageMax: number;
+  cityId: number;
+  hobbyIds: number[];
+  photos: (File | string)[];
 };
 
 export const register = (register_data: RegisterRequestDTO) => {
+  const formData = new FormData();
+
+  const { photos, ...data } = register_data;
+  formData.append("data", new Blob([JSON.stringify(data)], { type: "application/json" }));
+
+  photos.forEach((photo) => {
+    if (photo instanceof File) {
+      formData.append("photos", photo);
+    }
+  });
+
   return apiRequest<{ message: string }>("/register", {
     method: "POST",
-    body: JSON.stringify(register_data),
+    body: formData,
   });
 };
 
-export {}
+export {};

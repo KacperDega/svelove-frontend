@@ -6,10 +6,14 @@ export async function apiRequest<T>(
 ): Promise<T> {
   const token = localStorage.getItem("jwt");
 
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
+  const headers: HeadersInit = {};
+
+  if (!(options.body instanceof FormData)) {
+    headers["Content-Type"] = "application/json";
+  }
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
 
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,

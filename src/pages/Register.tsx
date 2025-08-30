@@ -26,7 +26,7 @@ const Register = () => {
     password: "",
     sex: "" as Sex,
     age: "",
-    localization: "",
+    cityId: "",
     description: "",
     preference: "" as Preference,
     age_min: "",
@@ -60,43 +60,42 @@ const Register = () => {
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  
+
   const previousStep = () => {
     setStep((prev) => prev - 1);
   };
 
   const nextStep = () => {
     if (step === 1) {
-    const { username, login, password, sex, age } = formData;
-    if (![username, login, password, sex, age].every((val) => val.trim())) {
-      setError("Uzupełnij wszystkie pola.");
-      return;
-    }
-    if (Number(age) < 18 || Number(age) > 100) {
-      setError("Wiek musi być między 18 a 100.");
-      return;
-    }
+      const { username, login, password, sex, age } = formData;
+      if (![username, login, password, sex, age].every((val) => val.trim())) {
+        setError("Uzupełnij wszystkie pola.");
+        return;
+      }
+      if (Number(age) < 18 || Number(age) > 100) {
+        setError("Wiek musi być między 18 a 100.");
+        return;
+      }
     }
 
     if (step === 2) {
-      const { localization, description, preference, age_min, age_max } =
-        formData;
-      if (![localization, description, preference, age_min, age_max].every((v) => v.trim())) {
-      setError("Uzupełnij wszystkie pola.");
-      return;
-    }
+      const { cityId, description, preference, age_min, age_max } = formData;
+      if (![cityId, description, preference, age_min, age_max].every((v) => v.trim())) {
+        setError("Uzupełnij wszystkie pola.");
+        return;
+      }
 
-    if (
-      Number(age_min) < 18 ||
-      Number(age_max) > 100 ||
-      Number(age_min) > Number(age_max)
-    ) {
-      setError("Zakres wieku musi być poprawny (18-100).");
-      return;
-    }
+      if (
+        Number(age_min) < 18 ||
+        Number(age_max) > 100 ||
+        Number(age_min) > Number(age_max)
+      ) {
+        setError("Zakres wieku musi być poprawny (18-100).");
+        return;
+      }
 
-    if (selectedHobbies.length === 0) {
-      setError("Wybierz przynajmniej jedno hobby.");
+      if (selectedHobbies.length === 0) {
+        setError("Wybierz przynajmniej jedno hobby.");
         return;
       }
     }
@@ -119,25 +118,25 @@ const Register = () => {
 
     try {
       const payload = {
-        username,
-        login: loginValue,
-        password,
-        sex: sex as Sex,
-        preference: preference as Preference,
-        description,
-        localization: toPascalCase(localization),
-        age: Number(age),
-        age_min: Number(age_min),
-        age_max: Number(age_max),
-        hobbies: selectedHobbies.map((h) => h.value),
+        username: formData.username,
+        login: formData.login,
+        password: formData.password,
+        sex: formData.sex as Sex,
+        preference: formData.preference as Preference,
+        description: formData.description,
+        age: Number(formData.age),
+        ageMin: Number(formData.age_min),
+        ageMax: Number(formData.age_max),
+        cityId: Number(formData.cityId),
+        hobbyIds: selectedHobbies.map((h) => h.value),
         photos,
       };
 
-      console.log("Rejestracja payload:", JSON.stringify(payload, null, 2));
+      console.log("Register payload:", payload);
 
       await register(payload);
 
-      const response = await login(loginValue, password);
+      const response = await login(formData.login, formData.password);
       localStorage.setItem("jwt", response.token);
       navigate("/dashboard");
     } catch (err: any) {
@@ -238,13 +237,13 @@ const Register = () => {
                   >
                     Powrót
                   </button>
-                <button
-                  type="button"
-                  className="btn btn-primary px-14"
-                  onClick={nextStep}
-                >
-                  Dalej
-                </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary px-14"
+                    onClick={nextStep}
+                  >
+                    Dalej
+                  </button>
                 </div>
               </>
             )}
@@ -253,9 +252,8 @@ const Register = () => {
               <>
                 {/* KROK 2 */}
                 <select
-                  name="localization"
-                  placeholder="Lokalizacja"
-                  value={formData.localization}
+                  name="cityId"
+                  value={formData.cityId}
                   onChange={handleChange}
                   className="select select-bordered"
                   required
