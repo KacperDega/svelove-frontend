@@ -13,6 +13,10 @@ const Register = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
 
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+
   const [hobbies, setHobbies] = useState<HobbyDTO[]>([]);
   const [cities, setCities] = useState<CityDTO[]>([]);
 
@@ -117,6 +121,9 @@ const Register = () => {
     }
 
     try {
+      setSubmitting(true);
+      setError(null);
+
       const payload = {
         username: formData.username,
         login: formData.login,
@@ -138,9 +145,16 @@ const Register = () => {
 
       const response = await login(formData.login, formData.password);
       localStorage.setItem("jwt", response.token);
-      navigate("/dashboard");
+      
+      setSubmitting(false);
+      setSuccess(true);
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2000);
     } catch (err: any) {
       setError(`Error: ${err.message || "Błąd rejestracji"}`);
+      setSubmitting(false);
     }
   };
 
@@ -353,11 +367,28 @@ const Register = () => {
                   >
                     Powrót
                   </button>
-                  <input
+                  
+                  <button
                     type="submit"
-                    className="btn btn-primary"
-                    value="Zarejestruj się"
-                  />
+                    className={`btn btn-primary 
+                      ${submitting || success ? "opacity-65 cursor-not-allowed" : ""}
+                      ${success ? "bg-success border-success hover:bg-success hover:border-success" : ""}
+                    `}
+                  >
+                    {success ? (
+                      <span className="flex items-center gap-2">
+                        <span className="animate-bounce">✅</span>
+                        <span>Zarejestrowano</span>
+                      </span>
+                    ) : submitting ? (
+                      <span className="flex items-center gap-2">
+                        <span className="loading loading-spinner loading-sm"></span>
+                        <span>Rejestracja...</span>
+                      </span>
+                    ) : (
+                      "Zarejestruj się"
+                    )}
+                  </button>
                 </div>
               </>
             )}

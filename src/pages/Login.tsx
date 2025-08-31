@@ -10,6 +10,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [showAlert, setShowAlert] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,20 +24,27 @@ const Login = () => {
     }
 
     try {
-      const response = await login(loginValue, password);
-      // console.log("Zalogowano, otrzymany token:", response.token);
-      console.log("Zalogowano.");
-      localStorage.setItem("jwt", response.token);
-
+      setSubmitting(true);
       setError(null);
 
-      navigate("/dashboard");
+      const response = await login(loginValue, password);
+      console.log("Zalogowano, otrzymany token:", response.token);
+      // console.log("Zalogowano.");
+      localStorage.setItem("jwt", response.token);
+
+      setSubmitting(false);
+      setSuccess(true);
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2000);
     } catch (err: any) {
       const message =
         err.message === "Unauthorized"
           ? "Niepoprawny login lub hasło"
           : `Error: ${err.message || "Błąd logowania"}`;
       setError(message);
+      setSubmitting(false);
     }
   };
 
@@ -89,11 +98,37 @@ const Login = () => {
                 required
               />
             </div>
-            <input
-              type="submit"
-              className="btn btn-primary"
-              value="Zaloguj się"
-            />
+            <div className="flex justify-between space-x-2">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => navigate("/")}
+              >
+                Powrót
+              </button>
+              
+              <button
+                type="submit"
+                className={`btn btn-primary 
+                  ${submitting || success ? "opacity-65 cursor-not-allowed" : ""}
+                  ${success ? "bg-success border-success hover:bg-success hover:border-success" : ""}
+                `}
+              >
+                {success ? (
+                  <span className="flex items-center gap-2">
+                    <span className="animate-bounce">✅</span>
+                    <span>Zalogowano</span>
+                  </span>
+                ) : submitting ? (
+                  <span className="flex items-center gap-2">
+                    <span className="loading loading-spinner loading-sm"></span>
+                    <span>Logowanie...</span>
+                  </span>
+                ) : (
+                  "Zaloguj się"
+                )}
+              </button>
+          </div>
           </form>
         </div>
       </div>
