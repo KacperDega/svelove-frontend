@@ -1,9 +1,5 @@
-import { apiRequest } from "./index";
-
-export type CityDTO = {
-  id: number;
-  name: string;
-};
+import { apiRequest } from "./apiRequest";
+import { CityDTO } from "../types/CityDTO";
 
 export const getCities = () => {
   return apiRequest<CityDTO[]>("/cities");

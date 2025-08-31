@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Select from "react-select";
-import { apiRequest } from "../api/index";
+import { apiRequest } from "../api/apiRequest";
 import { useNavigate } from "react-router-dom";
 import { hobbies as hobbyOptions } from "../types/enums/Hobby";
 import { UserProfileDTO, emptyProfile } from "../types/UserProfileDTO";

@@ -1,4 +1,4 @@
-import { apiRequest } from "./index";
+import { apiRequest } from "./apiRequest";
 
 export const login = (login: string, password: string) => {
   return apiRequest<{ token: string; username: string; id: number }>("/login", {

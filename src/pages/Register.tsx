@@ -6,8 +6,8 @@ import logo from "../assets/logo1.png";
 import { Preference, Sex } from "../types/enums";
 import Select from "react-select";
 import PhotoUploader from "../components/PhotoUploader";
-import { getHobbies, HobbyDTO } from "../api/hobbies";
-import { getCities, CityDTO } from "../api/cities";
+import { getHobbies, getCities } from "../api";
+import { CityDTO, HobbyDTO } from "../types";
 
 const Register = () => {
   const navigate = useNavigate();

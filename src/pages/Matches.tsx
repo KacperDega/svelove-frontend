@@ -12,6 +12,7 @@ interface MatchProfile {
   preference: Preference;
   hobbies: string[];
   description: string;
+  photoUrls: string[];
 }
 
 const translateSex = (sex: Sex) => {

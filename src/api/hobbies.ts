@@ -1,10 +1,5 @@
-import { apiRequest } from "./index";
-
-export type HobbyDTO = {
-  id: number;
-  name: string;
-  label: string;
-};
+import { apiRequest } from "./apiRequest";
+import { HobbyDTO } from "../types/HobbyDTO";
 
 export const getHobbies = () => {
   return apiRequest<HobbyDTO[]>("/hobbies");
