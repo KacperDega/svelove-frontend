@@ -3,19 +3,13 @@ import { apiRequest } from "../api/index";
 import { useNavigate } from "react-router-dom";
 import { UserProfileDTO, emptyProfile } from "../types/UserProfileDTO";
 import Navbar from "../components/Navbar";
+import "../index.css";
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<UserProfileDTO>(emptyProfile);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-
-
-  const photos = [
-    "https://picsum.photos/800/500",
-    "https://picsum.photos/800/400",
-    "https://picsum.photos/800/600",
-  ];
 
   useEffect(() => {
     async function fetchProfile() {
@@ -35,8 +29,12 @@ const Profile: React.FC = () => {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center min-h-[300px]">
-        <span className="loading loading-spinner loading-lg"></span>
+      <div className="flex flex-col h-dvh">
+        <Navbar />
+        
+        <div className="flex justify-center items-center min-h-screen">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
       </div>
     );
 
@@ -47,7 +45,7 @@ const Profile: React.FC = () => {
         
         {/* zdjecia */}
         <div className="carousel w-full rounded-lg overflow-hidden shadow-lg ">
-          {photos.map((url, index) => (
+          {user.photoUrls.map((url, index) => (
             <div
               id={`slide${index}`}
               key={index}
@@ -56,13 +54,13 @@ const Profile: React.FC = () => {
               <img src={url} className="w-full object-cover h-[300px] sm:h-[400px]" alt={`Zdjęcie ${index + 1}`} />
               <div className="absolute flex justify-between transform -translate-y-1/2 left-4 right-4 top-1/2">
                 <a
-                  href={`#slide${(index - 1 + photos.length) % photos.length}`}
+                  href={`#slide${(index - 1 + user.photoUrls.length) % user.photoUrls.length}`}
                   className="btn btn-circle btn-sm"
                 >
                   ❮
                 </a>
                 <a
-                  href={`#slide${(index + 1) % photos.length}`}
+                  href={`#slide${(index + 1) % user.photoUrls.length}`}
                   className="btn btn-circle btn-sm"
                 >
                   ❯
@@ -86,7 +84,7 @@ const Profile: React.FC = () => {
               <div>
                   <p><span className="font-semibold">Preferencje:</span> {user.preference}</p>
                   <p><span className="font-semibold">Preferowany zakres wieku:</span> {user.age_min} - {user.age_max}</p>
-                  <p><span className="font-semibold">Lokalizacja:</span> {user.localization}</p>
+                  <p><span className="font-semibold">Lokalizacja:</span> {user.city}</p>
               </div>
             </div>
 
