@@ -1,28 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Select from "react-select";
+import Select, { MultiValue } from "react-select";
 import { apiRequest } from "../api/apiRequest";
 import { useNavigate } from "react-router-dom";
-import { hobbies as hobbyOptions } from "../types/enums/Hobby";
-import { UserProfileDTO, emptyProfile } from "../types/UserProfileDTO";
+import { UserProfileDTO, emptyProfile} from "../types/UserProfileDTO";
 import Navbar from "../components/Navbar";
-
-const sexOptions = [
-  { value: "Male", label: "Mężczyzna" },
-  { value: "Female", label: "Kobieta" },
-  { value: "Other", label: "Inna" },
-];
-
-const preferenceOptions = [
-  { value: "Men", label: "Mężczyźni" },
-  { value: "Women", label: "Kobiety" },
-  { value: "Both", label: "Oboje" },
-  { value: "Other", label: "Inne" },
-];
-
-const hobbies = hobbyOptions.map((hobby) => ({
-  value: hobby,
-  label: hobby,
-}));
+import { CityDTO, HobbyDTO } from "../types";
+import { getCities, getHobbies } from "../api";
 
 const EditProfile: React.FC = () => {
   const [formData, setFormData] = useState<UserProfileDTO>(emptyProfile);
@@ -30,27 +13,35 @@ const EditProfile: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const photos = [
-    "https://picsum.photos/800/500",
-    "https://picsum.photos/800/400",
-    "https://picsum.photos/800/600",
-  ];
+  const [hobbies, setHobbies] = useState<HobbyDTO[]>([]);
+  const [cities, setCities] = useState<CityDTO[]>([]);
+  
 
   useEffect(() => {
-    async function fetchProfile() {
+  const loadAllData = async () => {
       setLoading(true);
       setError(null);
       try {
-        const data = await apiRequest<UserProfileDTO>("/profile");
-        setFormData(data);
-      } catch {
-        setError("Błąd pobierania profilu.");
+      const [hobbiesData, citiesData, profileData] = await Promise.all([
+        getHobbies(),
+        getCities(),
+        apiRequest<UserProfileDTO>("/profile"),
+      ]);
+
+      setHobbies(hobbiesData);
+      setCities(citiesData);
+      setFormData(profileData);
+    } catch (err) {
+      console.error("Data loading error:", err);
+      setError("Wystąpił błąd podczas ładowania danych. Spróbuj ponownie później.");
       } finally {
         setLoading(false);
       }
-    }
-    fetchProfile();
+  };
+
+  loadAllData();
   }, []);
+
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -60,8 +51,19 @@ const EditProfile: React.FC = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleHobbiesChange = (selected: any) => {
-    setFormData({ ...formData, hobbies: selected.map((s: any) => s.value) });
+  const handleHobbiesChange = (selected: MultiValue<{ value: number; label: string }>) => {
+    const selectedHobbyLabels = selected.map(s => s.label);
+    setFormData({ ...formData, hobbies: selectedHobbyLabels });
+  };
+
+  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCityId = Number(e.target.value);
+    const selectedCity = cities.find(city => city.id === selectedCityId);
+
+    setFormData({
+      ...formData,
+      city: selectedCity ? selectedCity.name : "",
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,8 +79,12 @@ const EditProfile: React.FC = () => {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center min-h-[300px]">
+      <div className="flex flex-col h-dvh">
+        <Navbar />
+        
+        <div className="flex justify-center items-center min-h-screen">
         <span className="loading loading-spinner loading-lg"></span>
+        </div>
       </div>
     );
 
@@ -87,28 +93,24 @@ const EditProfile: React.FC = () => {
       <Navbar />
 
       <div className="max-w-3xl mx-auto p-6 space-y-6">
-        {/* zdjęcia */}
-        <div className="carousel w-full rounded-lg overflow-hidden shadow-lg">
-          {photos.map((url, index) => (
+        {/* zdjecia */}
+        <div className="carousel w-full rounded-lg overflow-hidden shadow-lg ">
+          {formData.photoUrls.map((url, index) => (
             <div
               id={`slide${index}`}
               key={index}
               className="carousel-item relative w-full"
             >
-              <img
-                src={url}
-                className="w-full object-cover h-[300px] sm:h-[400px]"
-                alt={`Zdjęcie ${index + 1}`}
-              />
+              <img src={url} className="w-full object-cover h-[300px] sm:h-[400px]" alt={`Zdjęcie ${index + 1}`} />
               <div className="absolute flex justify-between transform -translate-y-1/2 left-4 right-4 top-1/2">
                 <a
-                  href={`#slide${(index - 1 + photos.length) % photos.length}`}
+                  href={`#slide${(index - 1 + formData.photoUrls.length) % formData.photoUrls.length}`}
                   className="btn btn-circle btn-sm"
                 >
                   ❮
                 </a>
                 <a
-                  href={`#slide${(index + 1) % photos.length}`}
+                  href={`#slide${(index + 1) % formData.photoUrls.length}`}
                   className="btn btn-circle btn-sm"
                 >
                   ❯
@@ -203,14 +205,20 @@ const EditProfile: React.FC = () => {
 
             <div>
               <label className="label font-semibold">Lokalizacja</label>
-              <input
-                name="localization"
-                value={formData.localization}
-                onChange={handleChange}
-                placeholder="Lokalizacja"
-                className="input input-bordered w-full"
+                <select
+                  name="cityId"
+                  value={cities.find(city => city.name === formData.city)?.id ?? ""}
+                  onChange={handleCityChange}
+                  className="select select-bordered w-full"
                 required
-              />
+                >
+                  <option value="">Wybierz miasto</option>
+                  {cities.map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
             </div>
 
             <div>
@@ -264,8 +272,10 @@ const EditProfile: React.FC = () => {
             <label className="font-semibold mb-1 block">Zainteresowania:</label>
             <Select
               isMulti
-              options={hobbies}
-              value={formData.hobbies.map((h) => ({ value: h, label: h }))}
+              options={hobbies.map((h) => ({ value: h.id, label: h.label }))}
+              value={hobbies
+                .filter((h) => formData.hobbies.includes(h.label))
+.map((h) => ({ value: h.id, label: h.label }))}
               onChange={handleHobbiesChange}
               className="react-select-container text-black"
               classNamePrefix="react-select"
