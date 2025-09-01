@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Select, { MultiValue } from "react-select";
 import { apiRequest } from "../api/apiRequest";
 import { useNavigate } from "react-router-dom";
-import { UserProfileDTO, emptyProfile} from "../types/UserProfileDTO";
+import { UserProfileDTO, emptyProfile, mapToUpdateDto } from "../types/UserProfileDTO";
 import Navbar from "../components/Navbar";
 import { CityDTO, HobbyDTO } from "../types";
 import { getCities, getHobbies } from "../api";
@@ -17,11 +17,11 @@ const EditProfile: React.FC = () => {
   const [cities, setCities] = useState<CityDTO[]>([]);
   
 
-  useEffect(() => {
+useEffect(() => {
   const loadAllData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
+    setLoading(true);
+    setError(null);
+    try {
       const [hobbiesData, citiesData, profileData] = await Promise.all([
         getHobbies(),
         getCities(),
@@ -34,13 +34,13 @@ const EditProfile: React.FC = () => {
     } catch (err) {
       console.error("Data loading error:", err);
       setError("Wystąpił błąd podczas ładowania danych. Spróbuj ponownie później.");
-      } finally {
-        setLoading(false);
-      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   loadAllData();
-  }, []);
+}, []);
 
 
   const handleChange = (
@@ -69,9 +69,14 @@ const EditProfile: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await apiRequest("/profile/edit", {method: "POST",body: JSON.stringify(formData),});
+      const updateDto = mapToUpdateDto(formData, hobbies, cities);
+      await apiRequest("/profile/edit", {
+        method: "POST",
+        body: JSON.stringify(updateDto),
+      });
       navigate("/profile");
-    } catch {
+    } catch (err) {
+      console.error("City not found"); 
       setError("Błąd zapisu zmian.");
     }
   };
@@ -83,7 +88,7 @@ const EditProfile: React.FC = () => {
         <Navbar />
         
         <div className="flex justify-center items-center min-h-screen">
-        <span className="loading loading-spinner loading-lg"></span>
+          <span className="loading loading-spinner loading-lg"></span>
         </div>
       </div>
     );
@@ -145,10 +150,10 @@ const EditProfile: React.FC = () => {
               <input
                 name="login"
                 value={formData.login}
-                onChange={handleChange}
+                // onChange={handleChange}
                 placeholder="Login"
                 className="input input-bordered w-full"
-                required
+                disabled
               />
             </div>
 
@@ -157,16 +162,14 @@ const EditProfile: React.FC = () => {
               <select
                 name="sex"
                 value={formData.sex}
-                onChange={handleChange}
+                // onChange={handleChange}
                 className="select select-bordered w-full"
-                required
+                disabled
               >
-                <option value="">Wybierz płeć</option>
-                {sexOptions.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
+                <option value="">Płeć</option>
+                <option value="Male">Mężczyzna</option>
+                <option value="Female">Kobieta</option>
+                <option value="Other">Inna</option>
               </select>
             </div>
 
@@ -195,11 +198,10 @@ const EditProfile: React.FC = () => {
                 required
               >
                 <option value="">Preferencje</option>
-                {preferenceOptions.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
+                <option value="Men">Mężczyźni</option>
+                <option value="Women">Kobiety</option>
+                <option value="Both">Oboje</option>
+                <option value="Other">Inne</option>
               </select>
             </div>
 
@@ -210,7 +212,7 @@ const EditProfile: React.FC = () => {
                   value={cities.find(city => city.name === formData.city)?.id ?? ""}
                   onChange={handleCityChange}
                   className="select select-bordered w-full"
-                required
+                  required
                 >
                   <option value="">Wybierz miasto</option>
                   {cities.map((city) => (
@@ -275,7 +277,7 @@ const EditProfile: React.FC = () => {
               options={hobbies.map((h) => ({ value: h.id, label: h.label }))}
               value={hobbies
                 .filter((h) => formData.hobbies.includes(h.label))
-.map((h) => ({ value: h.id, label: h.label }))}
+                .map((h) => ({ value: h.id, label: h.label }))}
               onChange={handleHobbiesChange}
               className="react-select-container text-black"
               classNamePrefix="react-select"
