@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { login } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
-import logo from "../assets/logo1.png";
+import logo from "../assets/logo1.svg";
 
 const Login = () => {
   const navigate = useNavigate();
