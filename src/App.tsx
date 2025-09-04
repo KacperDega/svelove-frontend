@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import ProfilePage from './pages/Profile'
 import EditProfile from './pages/EditProfile'
+import EditPhotos from './pages/EditPhotos';
 import Matches from './pages/Matches';
 
 const titleMap: Record<string, string> = {
@@ -16,6 +17,7 @@ const titleMap: Record<string, string> = {
   '/dashboard': 'Panel użytkownika | svelove',
   '/profile': "Profil | svelove",
   '/profile/edit': "Edytuj profil | svelove",
+  '/profile/edit/photos': "Edytuj zdjęcia | svelove",
   '/matches': "Dopasowania | svelove",
 };
 
@@ -40,6 +42,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/edit" element={<EditProfile />} />
+        <Route path="/profile/edit/photos" element={<EditPhotos />} />
         <Route path='/matches' element={<Matches/>} />
       </Routes>
     </BrowserRouter>

@@ -98,31 +98,42 @@ useEffect(() => {
       <Navbar />
 
       <div className="max-w-3xl mx-auto p-6 space-y-6">
+        
         {/* zdjecia */}
-        <div className="carousel w-full rounded-lg overflow-hidden shadow-lg ">
-          {formData.photoUrls.map((url, index) => (
-            <div
-              id={`slide${index}`}
-              key={index}
-              className="carousel-item relative w-full"
-            >
-              <img src={url} className="w-full object-cover h-[300px] sm:h-[400px]" alt={`Zdjęcie ${index + 1}`} />
-              <div className="absolute flex justify-between transform -translate-y-1/2 left-4 right-4 top-1/2">
-                <a
-                  href={`#slide${(index - 1 + formData.photoUrls.length) % formData.photoUrls.length}`}
-                  className="btn btn-circle btn-sm"
-                >
-                  ❮
-                </a>
-                <a
-                  href={`#slide${(index + 1) % formData.photoUrls.length}`}
-                  className="btn btn-circle btn-sm"
-                >
-                  ❯
-                </a>
+        <div className="relative">
+          <div className="carousel w-full rounded-lg overflow-hidden shadow-lg ">
+            {formData.photoUrls.map((url, index) => (
+              <div
+                id={`slide${index}`}
+                key={index}
+                className="carousel-item relative w-full"
+              >
+                <img src={url} className="w-full object-cover h-[300px] sm:h-[400px]" alt={`Zdjęcie ${index + 1}`} />
+                <div className="absolute flex justify-between transform -translate-y-1/2 left-4 right-4 top-1/2">
+                  <a
+                    href={`#slide${(index - 1 + formData.photoUrls.length) % formData.photoUrls.length}`}
+                    className="btn btn-circle btn-sm"
+                  >
+                    ❮
+                  </a>
+                  <a
+                    href={`#slide${(index + 1) % formData.photoUrls.length}`}
+                    className="btn btn-circle btn-sm"
+                  >
+                    ❯
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => navigate("/profile/edit/photos")}
+            className="btn btn-sm btn-secondary bg-opacity-75 absolute bottom-4 right-2 shadow-md"
+          >
+            📸 Edytuj zdjęcia
+          </button>
         </div>
 
         {/* edycja */}

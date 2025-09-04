@@ -1,4 +1,5 @@
 import { Preference, Sex } from "./enums";
+import imagePlaceholder from "../assets/image-placeholder.svg";
 
 export interface UserProfileDTO {
   username: string;
@@ -34,7 +35,7 @@ export const emptyProfile: UserProfileDTO = {
   hobbies: [],
   description: "",
   city: "",
-  photoUrls: [],
+  photoUrls: [imagePlaceholder],
   age: 0,
   age_min: 0,
   age_max: 0,
