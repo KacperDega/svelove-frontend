@@ -1,14 +1,17 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import logo from "../assets/logo1.svg";
 
 const Navbar: React.FC = () => {
+  const location = useLocation();
+  const path = location.pathname;
+
   const navItems = [
-    { to: "/dashboard", label: "🏠 Główna" },
-    { to: "/matches", label: "🔥 Dopasowania" },
-    { to: "/chat", label: "💬 Wiadomości" },
-    { to: "/profile", label: "👤 Profil" },
-    { to: "/profile/edit", label: "⚙️ Ustawienia" },
+    { to: "/dashboard", label: "🏠 Główna", isActive: () => path === "/dashboard" },
+    { to: "/matches", label: "🔥 Dopasowania", isActive: () => path.startsWith("/matches") },
+    { to: "/chat", label: "💬 Wiadomości", isActive: () => path.startsWith("/chat") },
+    { to: "/profile", label: "👤 Profil", isActive: () => path.startsWith("/profile") && !path.startsWith("/profile/edit") },
+    { to: "/profile/edit", label: "⚙️ Ustawienia", isActive: () => path.startsWith("/profile/edit") },
   ];
 
   return (
@@ -16,21 +19,21 @@ const Navbar: React.FC = () => {
       <div className="hidden md:block mr-4">
         <img src={logo} alt="Logo" className="h-6 max-h-6 object-contain" />
       </div>
-      
-      {navItems.map((item) => (
-        <NavLink
-          key={item.to}
-          to={item.to}
-          end
-          className={({ isActive }) =>
-            `hover:brightness-125 ${
-              isActive ? "text-primary font-bold" : "text-secondary font-medium"
-            }`
-          }
-        >
-          {item.label}
-        </NavLink>
-      ))}
+
+      {navItems.map((item) => {
+        const isActive = location.pathname.startsWith(item.to);
+        return (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={`hover:brightness-125 ${
+              item.isActive() ? "text-primary font-bold" : "text-secondary font-medium"
+            }`}
+          >
+            {item.label}
+          </NavLink>
+        );
+      })}
     </nav>
   );
 };
