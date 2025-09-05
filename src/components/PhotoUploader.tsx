@@ -1,46 +1,37 @@
-import React, { useState } from "react";
+import React from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 type Props = {
   maxFiles?: number;
-  onChange?: (files: (File | string)[]) => void;
+  value: (File | string)[];
+  onChange: (files: (File | string)[]) => void;
 };
 
-function PhotoUploader({ maxFiles = 5, onChange }: Props) {
-  const [photos, setPhotos] = useState<(File | string)[]>([]);
+function PhotoUploader({ maxFiles = 5, value, onChange }: Props) {
+  const photos = value;
 
   const handleAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-
     const newFiles = Array.from(e.target.files);
     const updated = [...photos, ...newFiles].slice(0, maxFiles);
-
-    setPhotos(updated);
-    if (onChange) {
-      onChange(updated);
-    }
+    onChange(updated);
   };
 
   const handleRemove = (index: number) => {
     const updated = photos.filter((_, i) => i !== index);
-    setPhotos(updated);
-    if (onChange) {
-      onChange(updated);
-    }
+    onChange(updated);
   };
 
   const handleDragEnd = (result: any) => {
     if (!result.destination) return;
-
     const reordered = Array.from(photos);
     const [moved] = reordered.splice(result.source.index, 1);
     reordered.splice(result.destination.index, 0, moved);
-
-    setPhotos(reordered);
-    if (onChange) {
-      onChange(reordered);
-    }
+    onChange(reordered);
   };
+
+  // robimy tablicę długości maxFiles
+  const slots = Array.from({ length: maxFiles }, (_, i) => photos[i] || null);
 
   return (
     <div>
@@ -61,39 +52,51 @@ function PhotoUploader({ maxFiles = 5, onChange }: Props) {
               ref={provided.innerRef}
               {...provided.droppableProps}
             >
-              {photos.map((file, index) => {
-                const preview =
-                  typeof file === "string" ? file : URL.createObjectURL(file);
+              {slots.map((file, index) => {
+                if (file) {
+                  const preview =
+                    typeof file === "string" ? file : URL.createObjectURL(file);
 
-                return (
-                  <Draggable
-                    key={index.toString()}
-                    draggableId={index.toString()}
-                    index={index}
-                  >
-                    {(provided) => (
-                      <div
-                        className="relative w-32 h-32 border border-secondary rounded-md overflow-hidden"
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        <img
-                          src={preview}
-                          alt="preview"
-                          className="w-full h-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleRemove(index)}
-                          className="absolute top-1 right-1 bg-black bg-opacity-35 px-2 py-1 rounded text-sm"
+                  return (
+                    <Draggable
+                      key={`photo-${index}`}
+                      draggableId={`photo-${index}`}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          className="relative w-32 h-32 border border-secondary rounded-md overflow-hidden"
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
                         >
-                          ✖
-                        </button>
-                      </div>
-                    )}
-                  </Draggable>
-                );
+                          <img
+                            src={preview}
+                            alt="preview"
+                            className="w-full h-full object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemove(index)}
+                            className="absolute top-1 right-1 bg-black bg-opacity-35 px-2 py-1 rounded text-sm"
+                          >
+                            ✖
+                          </button>
+                        </div>
+                      )}
+                    </Draggable>
+                  );
+                } else {
+                  // placeholder slot
+                  return (
+                    <div
+                      key={`empty-${index}`}
+                      className="w-32 h-32 border-2 border-dashed border-secondary rounded-md flex items-center justify-center select-none text-secondary/50"
+                    >
+                      +
+                    </div>
+                  );
+                }
               })}
               {provided.placeholder}
             </div>
