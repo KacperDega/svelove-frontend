@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Sex, Preference } from "../types/enums";
-import { apiRequest } from "../api/index";
+import { apiRequest } from "../api/apiRequest";
 
 interface MatchProfile {
   id: number;
@@ -44,6 +44,21 @@ const Matches = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [likeLoading, setLikeLoading] = useState(false);
+  const [showError, setShowError] = useState(true);
+
+  useEffect(() => {
+    if (error) {
+      setShowError(true);
+
+      const startFadeTimer = setTimeout(() => setShowError(false), 4500);
+      const clearTimer = setTimeout(() => setError(null), 5000);
+
+      return () => {
+        clearTimeout(startFadeTimer);
+        clearTimeout(clearTimer);
+      };
+    }
+  }, [error]);
 
   const fetchMatches = async () => {
     try {
@@ -58,9 +73,24 @@ const Matches = () => {
     fetchMatches().finally(() => setLoading(false));
   }, []);
 
+  const preloadImage = (url: string) =>
+  new Promise<void>((resolve, reject) => {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => resolve();
+    img.onerror = () => reject();
+  });
+
   const handleSkip = () => {
+    const nextMatch = matches[1];
+
     setMatches((prev) => prev.slice(1));
+
     if (matches.length < 6) fetchMatches();
+
+    if (nextMatch) {
+      preloadImage(nextMatch.photoUrls[0]);
+    }
   };
 
   const handleLike = async () => {
@@ -70,6 +100,7 @@ const Matches = () => {
       await apiRequest<string>(`/matches/like/${likedUser.id}`, { method: "POST" });
       handleSkip();
     } catch (e) {
+      console.error(e);
       setError("BŁĄD: Nie udało się polubić.");
     } finally {
     setLikeLoading(false);
@@ -78,8 +109,12 @@ const Matches = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <span className="loading loading-spinner loading-lg"></span>
+      <div className="flex flex-col h-dvh">
+        <Navbar />
+        
+        <div className="flex justify-center items-center min-h-screen">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
       </div>
     );
   }
@@ -94,7 +129,7 @@ const Matches = () => {
           <div className="card w-full max-w-2xl bg-neutral shadow-2xl border border-secondary">
             <figure className="h-[550px] overflow-hidden">
               <img
-                src="https://thispersondoesnotexist.com"
+                src={current.photoUrls[0]}
                 alt={current.username}
                 className="object-cover w-full h-full"
               />
@@ -149,7 +184,8 @@ const Matches = () => {
       </div>
 
       {error && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 alert alert-error max-w-md mx-auto mt-8 z-50">
+        <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 alert alert-error max-w-md mx-auto mt-8 z-50
+                        transition-all duration-500 ease-in-out  ${showError ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
           <span>{error}</span>
         </div>
       )}
