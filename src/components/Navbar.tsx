@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import logo from "../assets/logo1.svg";
+import NotificationsMenu from "./NotificationsMenu";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
@@ -33,8 +34,12 @@ const Navbar: React.FC = () => {
           >
             {item.label}
           </NavLink>
-        );
-      })}
+        ))}
+      </div>
+
+      <div className="hidden md:flex items-center">
+        <NotificationsMenu />
+      </div>
     </nav>
   );
 };
