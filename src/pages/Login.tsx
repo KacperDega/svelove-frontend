@@ -101,7 +101,7 @@ const Login = () => {
             <div className="flex justify-between space-x-2">
               <button
                 type="button"
-                className="btn btn-secondary"
+                className={`btn btn-secondary ${submitting ? "opacity-65 cursor-not-allowed pointer-events-none" : ""}`}
                 onClick={() => navigate("/")}
               >
                 Powrót
@@ -110,7 +110,7 @@ const Login = () => {
               <button
                 type="submit"
                 className={`btn btn-primary 
-                  ${submitting || success ? "opacity-65 cursor-not-allowed" : ""}
+                  ${submitting || success ? "opacity-65 cursor-not-allowed pointer-events-none" : ""}
                   ${success ? "bg-success border-success hover:bg-success hover:border-success" : ""}
                 `}
               >

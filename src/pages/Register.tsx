@@ -357,12 +357,12 @@ const Register = () => {
             {step === 3 && (
               <>
                 {/* KROK 3 */}
-                <PhotoUploader maxFiles={5} onChange={setPhotos} />
+                <PhotoUploader maxFiles={5} value={photos} onChange={setPhotos} />
 
                 <div className="flex justify-between space-x-2 mt-4">
                   <button
                     type="button"
-                    className="btn btn-secondary"
+                    className={`btn btn-secondary ${submitting ? "opacity-65 cursor-not-allowed pointer-events-none" : ""}`}
                     onClick={previousStep}
                   >
                     Powrót
@@ -371,7 +371,7 @@ const Register = () => {
                   <button
                     type="submit"
                     className={`btn btn-primary 
-                      ${submitting || success ? "opacity-65 cursor-not-allowed" : ""}
+                      ${submitting || success ? "opacity-65 cursor-not-allowed pointer-events-none" : ""}
                       ${success ? "bg-success border-success hover:bg-success hover:border-success" : ""}
                     `}
                   >
