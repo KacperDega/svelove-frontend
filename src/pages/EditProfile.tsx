@@ -84,10 +84,10 @@ useEffect(() => {
 
   if (loading)
     return (
-      <div className="flex flex-col h-dvh">
+      <div className="flex flex-col min-h-screen">
         <Navbar />
         
-        <div className="flex justify-center items-center min-h-screen">
+        <div className="flex justify-center items-center flex-grow">
           <span className="loading loading-spinner loading-lg"></span>
         </div>
       </div>
@@ -97,224 +97,225 @@ useEffect(() => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
 
-      <div className="max-w-3xl mx-auto p-6 space-y-6">
-        
-        {/* zdjecia */}
-        <div className="relative">
-          <div className="carousel w-full rounded-lg overflow-hidden shadow-lg ">
-            {formData.photoUrls.map((url, index) => (
-              <div
-                id={`slide${index}`}
-                key={index}
-                className="carousel-item relative w-full"
-              >
-                <img src={url} className="w-full object-cover h-[300px] sm:h-[400px]" alt={`Zdjęcie ${index + 1}`} />
-                <div className="absolute flex justify-between transform -translate-y-1/2 left-4 right-4 top-1/2">
-                  <a
-                    href={`#slide${(index - 1 + formData.photoUrls.length) % formData.photoUrls.length}`}
-                    className="btn btn-circle btn-sm"
-                  >
-                    ❮
-                  </a>
-                  <a
-                    href={`#slide${(index + 1) % formData.photoUrls.length}`}
-                    className="btn btn-circle btn-sm"
-                  >
-                    ❯
-                  </a>
+      <div className="max-w-5xl mx-auto p-6 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-[6fr_4fr] gap-6">
+
+          {/* zdjecia */}
+          <div className="relative flex flex-col self-stretch">
+            <div className="carousel w-full rounded-lg overflow-hidden shadow-lg flex-grow">
+              {formData.photoUrls.map((url, index) => (
+                <div
+                  id={`slide${index}`}
+                  key={index}
+                  className="carousel-item relative w-full"
+                >
+                  <img src={url} className="w-full object-cover h-full" alt={`Zdjęcie ${index + 1}`} />
+                  <div className="absolute flex justify-between transform -translate-y-1/2 left-4 right-4 top-1/2">
+                    <a
+                      href={`#slide${(index - 1 + formData.photoUrls.length) % formData.photoUrls.length}`}
+                      className="btn btn-circle btn-sm"
+                    >
+                      ❮
+                    </a>
+                    <a
+                      href={`#slide${(index + 1) % formData.photoUrls.length}`}
+                      className="btn btn-circle btn-sm"
+                    >
+                      ❯
+                    </a>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => navigate("/profile/edit/photos")}
+              className="btn btn-sm btn-secondary bg-opacity-75 absolute bottom-4 right-2 shadow-md"
+            >
+              📸 Edytuj zdjęcia
+            </button>
           </div>
 
-          <button
-            type="button"
-            onClick={() => navigate("/profile/edit/photos")}
-            className="btn btn-sm btn-secondary bg-opacity-75 absolute bottom-4 right-2 shadow-md"
+          {/* edycja */}
+          <form
+            onSubmit={handleSubmit}
+            className="card bg-neutral shadow-xl border border-secondary p-6 space-y-4"
           >
-            📸 Edytuj zdjęcia
-          </button>
-        </div>
+            <h2 className="text-3xl font-bold mb-4">Edytuj profil</h2>
 
-        {/* edycja */}
-        <form
-          onSubmit={handleSubmit}
-          className="card bg-neutral shadow-xl border border-secondary p-6 space-y-4"
-        >
-          <h2 className="text-3xl font-bold mb-4">Edytuj profil</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="label font-semibold">Nazwa użytkownika</label>
+                <input
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  placeholder="Nazwa użytkownika"
+                  className="input input-bordered w-full"
+                  required
+                />
+              </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="label font-semibold">Nazwa użytkownika</label>
-              <input
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="Nazwa użytkownika"
-                className="input input-bordered w-full"
-                required
-              />
-            </div>
+              {/* <div>
+                <label className="label font-semibold">Login</label>
+                <input
+                  name="login"
+                  value={formData.login}
+                  // onChange={handleChange}
+                  placeholder="Login"
+                  className="input input-bordered w-full"
+                  disabled
+                />
+              </div>
 
-            <div>
-              <label className="label font-semibold">Login</label>
-              <input
-                name="login"
-                value={formData.login}
-                // onChange={handleChange}
-                placeholder="Login"
-                className="input input-bordered w-full"
-                disabled
-              />
-            </div>
-
-            <div>
-              <label className="label font-semibold">Płeć</label>
-              <select
-                name="sex"
-                value={formData.sex}
-                // onChange={handleChange}
-                className="select select-bordered w-full"
-                disabled
-              >
-                <option value="">Płeć</option>
-                <option value="Male">Mężczyzna</option>
-                <option value="Female">Kobieta</option>
-                <option value="Other">Inna</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="label font-semibold">Wiek</label>
-              <input
-                name="age"
-                type="number"
-                min={18}
-                max={100}
-                value={formData.age}
-                onChange={handleChange}
-                placeholder="Wiek"
-                className="input input-bordered w-full"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="label font-semibold">Preferencje</label>
-              <select
-                name="preference"
-                value={formData.preference}
-                onChange={handleChange}
-                className="select select-bordered w-full"
-                required
-              >
-                <option value="">Preferencje</option>
-                <option value="Men">Mężczyźni</option>
-                <option value="Women">Kobiety</option>
-                <option value="Both">Oboje</option>
-                <option value="Other">Inne</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="label font-semibold">Lokalizacja</label>
+              <div>
+                <label className="label font-semibold">Płeć</label>
                 <select
-                  name="cityId"
-                  value={cities.find(city => city.name === formData.city)?.id ?? ""}
-                  onChange={handleCityChange}
+                  name="sex"
+                  value={formData.sex}
+                  // onChange={handleChange}
+                  className="select select-bordered w-full"
+                  disabled
+                >
+                  <option value="">Płeć</option>
+                  <option value="Male">Mężczyzna</option>
+                  <option value="Female">Kobieta</option>
+                  <option value="Other">Inna</option>
+                </select>
+              </div> */}
+
+              <div>
+                <label className="label font-semibold">Wiek</label>
+                <input
+                  name="age"
+                  type="number"
+                  min={18}
+                  max={100}
+                  value={formData.age}
+                  onChange={handleChange}
+                  placeholder="Wiek"
+                  className="input input-bordered w-full"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="label font-semibold">Preferencje</label>
+                <select
+                  name="preference"
+                  value={formData.preference}
+                  onChange={handleChange}
                   className="select select-bordered w-full"
                   required
                 >
-                  <option value="">Wybierz miasto</option>
-                  {cities.map((city) => (
-                    <option key={city.id} value={city.id}>
-                      {city.name}
-                    </option>
-                  ))}
+                  <option value="">Preferencje</option>
+                  <option value="Men">Mężczyźni</option>
+                  <option value="Women">Kobiety</option>
+                  <option value="Both">Oboje</option>
+                  <option value="Other">Inne</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="label font-semibold">Lokalizacja</label>
+                  <select
+                    name="cityId"
+                    value={cities.find(city => city.name === formData.city)?.id ?? ""}
+                    onChange={handleCityChange}
+                    className="select select-bordered w-full"
+                    required
+                  >
+                    <option value="">Wybierz miasto</option>
+                    {cities.map((city) => (
+                      <option key={city.id} value={city.id}>
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+              </div>
+
+              <div>
+                <label className="label font-semibold">
+                  Min. wiek partnera
+                </label>
+                <input
+                  name="age_min"
+                  type="number"
+                  min={18}
+                  max={100}
+                  value={formData.age_min}
+                  onChange={handleChange}
+                  placeholder="Minimalny wiek partnera"
+                  className="input input-bordered w-full"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="label font-semibold">
+                  Maks. wiek partnera
+                </label>
+                <input
+                  name="age_max"
+                  type="number"
+                  min={18}
+                  max={100}
+                  value={formData.age_max}
+                  onChange={handleChange}
+                  placeholder="Maksymalny wiek partnera"
+                  className="input input-bordered w-full"
+                  required
+                />
+              </div>
             </div>
 
             <div>
-              <label className="label font-semibold">
-                Minimalny wiek partnera
-              </label>
-              <input
-                name="age_min"
-                type="number"
-                min={18}
-                max={100}
-                value={formData.age_min}
+              <label className="font-semibold mb-1 block">Opis:</label>
+              <textarea
+                name="description"
+                value={formData.description}
                 onChange={handleChange}
-                placeholder="Minimalny wiek partnera"
-                className="input input-bordered w-full"
+                className="textarea textarea-bordered w-full" 
+                rows={4}
                 required
               />
             </div>
 
             <div>
-              <label className="label font-semibold">
-                Maksymalny wiek partnera
-              </label>
-              <input
-                name="age_max"
-                type="number"
-                min={18}
-                max={100}
-                value={formData.age_max}
-                onChange={handleChange}
-                placeholder="Maksymalny wiek partnera"
-                className="input input-bordered w-full"
-                required
+              <label className="font-semibold mb-1 block">Zainteresowania:</label>
+              <Select
+                isMulti
+                options={hobbies.map((h) => ({ value: h.id, label: h.label }))}
+                value={hobbies
+                  .filter((h) => formData.hobbies.includes(h.label))
+                  .map((h) => ({ value: h.id, label: h.label }))}
+                onChange={handleHobbiesChange}
+                className="react-select-container text-black"
+                classNamePrefix="react-select"
               />
             </div>
-          </div>
 
-          <div>
-            <label className="font-semibold mb-1 block">Opis:</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              className="textarea textarea-bordered w-full" 
-              rows={4}
-              required
-            />
-          </div>
+            <div className="flex justify-end gap-4 mt-6">
+              <button
+                type="button"
+                onClick={() => navigate("/profile")}
+                className="btn btn-outline btn-secondary"
+              >
+                Anuluj
+              </button>
+              <button type="submit" className="btn btn-primary">
+                Zapisz zmiany
+              </button>
+            </div>
+          </form>
 
-          <div>
-            <label className="font-semibold mb-1 block">Zainteresowania:</label>
-            <Select
-              isMulti
-              options={hobbies.map((h) => ({ value: h.id, label: h.label }))}
-              value={hobbies
-                .filter((h) => formData.hobbies.includes(h.label))
-                .map((h) => ({ value: h.id, label: h.label }))}
-              onChange={handleHobbiesChange}
-              className="react-select-container text-black"
-              classNamePrefix="react-select"
-            />
-          </div>
-
-          <div className="flex justify-end gap-4 mt-6">
-            <button
-              type="button"
-              onClick={() => navigate("/profile")}
-              className="btn btn-outline btn-secondary"
-            >
-              Anuluj
-            </button>
-            <button type="submit" className="btn btn-primary">
-              Zapisz zmiany
-            </button>
-          </div>
-        </form>
-
-        {error && (
-          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 alert alert-error max-w-md mx-auto mt-8 z-50">
-            <span>{error}</span>
-          </div>
-        )}
-        
+          {error && (
+            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 alert alert-error max-w-md mx-auto mt-8 z-50">
+              <span>{error}</span>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
