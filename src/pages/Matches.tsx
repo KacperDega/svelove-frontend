@@ -107,12 +107,12 @@ const Matches = () => {
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
-      <div className="flex flex-col h-dvh">
+      <div className="flex flex-col min-h-screen">
         <Navbar />
         
-        <div className="flex justify-center items-center min-h-screen">
+        <div className="flex justify-center items-center flex-grow">
           <span className="loading loading-spinner loading-lg"></span>
         </div>
       </div>
