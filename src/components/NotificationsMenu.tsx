@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { apiRequest } from "../api/apiRequest";
 import { FaBell as BellIcon, FaCheckCircle as MatchIcon, FaComments as ConversationIcon } from "react-icons/fa";
 
@@ -15,6 +15,7 @@ const NotificationsMenu = () => {
   const [notifications, setNotifications] = useState<NotificationDto[]>([]);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -22,7 +23,7 @@ const NotificationsMenu = () => {
         const data = await apiRequest<NotificationDto[]>("/notifications");
         setNotifications(data);
       } catch (err) {
-        console.error("Błąd przy pobieraniu powiadomień", err);
+        console.error("Error getting notifications.", err);
         setError(true);
       }
     };
@@ -31,8 +32,19 @@ const NotificationsMenu = () => {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={menuRef}>
       <button
         className="relative btn btn-ghost btn-circle"
         onClick={() => setOpen((prev) => !prev)}
@@ -54,9 +66,9 @@ const NotificationsMenu = () => {
               notifications.map((n) => (
                 <div
                   key={n.id}
-                  className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-base-200 ${
-                    !n.read ? "font-semibold" : ""
-                  }`}
+                  className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer bg-base-100 hover:bg-base-300
+                    ${!n.read ? "font-semibold border-info border-l-4" : ""}
+                  `}
                   onClick={() => {
                     // TODO: przekierowania
                     console.log("Kliknięto powiadomienie", n);
