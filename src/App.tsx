@@ -5,6 +5,7 @@ import Main from './pages/Main';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Chat from './pages/Chat';
 import ProfilePage from './pages/Profile'
 import EditProfile from './pages/EditProfile'
 import EditPhotos from './pages/EditPhotos';
@@ -15,6 +16,7 @@ const titleMap: Record<string, string> = {
   '/login': 'Logowanie | svelove',
   '/register': 'Rejestracja | svelove',
   '/dashboard': 'Panel użytkownika | svelove',
+  '/chat': 'Czat | svelove',
   '/profile': "Profil | svelove",
   '/profile/edit': "Edytuj profil | svelove",
   '/profile/edit/photos': "Edytuj zdjęcia | svelove",
@@ -40,6 +42,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard/>} />
+        <Route path="/chat/:matchId" element={<Chat />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/edit" element={<EditProfile />} />
         <Route path="/profile/edit/photos" element={<EditPhotos />} />

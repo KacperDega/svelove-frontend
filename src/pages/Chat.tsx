@@ -1,6 +1,27 @@
 import React, { useEffect, useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { apiRequest } from "../api";
+import { Client } from "@stomp/stompjs";
+
+const formatTimestamp = (timestamp: number) => {
+  const date = new Date(timestamp);
+  const today = new Date();
+
+  const isToday =
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear();
+
+  if (isToday) {
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  } else {
+    return date.toLocaleDateString("pl-PL", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  }
+};
 
 interface ConversationDto {
   matchId: number;
@@ -13,21 +34,31 @@ interface ConversationDto {
 interface MessageResponseDto {
   id: number;
   content: string;
-  writtenBy: string;
-  createdAt: string;
+  writtenBy: number;
+  timestamp: string;
+}
+
+interface MessageRequestDto {
+  content: string;
+  writtenBy: number;
+  matchId: number;
 }
 
 const ChatPage: React.FC = () => {
   const [conversations, setConversations] = useState<ConversationDto[]>([]);
+  const [messages, setMessages] = useState<MessageResponseDto[]>([]);
   const [activeConversation, setActiveConversation] = useState<ConversationDto | null>(null);
   const [newMessage, setNewMessage] = useState("");
-  const [messages, setMessages] = useState<MessageResponseDto[]>([]);
   const [loadingConversations, setLoadingConversations] = useState(false);
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showError, setShowError] = useState(true);
 
-  const currentUserId = localStorage.getItem("userId") ? parseInt(localStorage.getItem("userId")!) : 0;
+  const clientRef = useRef<Client | null>(null);
+
+  const currentUserId = localStorage.getItem("userId")
+    ? parseInt(localStorage.getItem("userId")!)
+    : 0;
 
   useEffect(() => {
     if (error) {
@@ -42,11 +73,11 @@ const ChatPage: React.FC = () => {
       try {
         setLoadingConversations(true);
         const data = await apiRequest<ConversationDto[]>("/chat/conversations");
-        //console.log("Pobrane konwersacje:", data);
+        // console.log("Fetched conversations:", data);
         setConversations(data);
       } catch (err) {
         console.error(err);
-        setError("Nie udało się pobrać konwersacji.");
+        setError("Failed to fetch conversations.");
       } finally {
         setLoadingConversations(false);
       }
@@ -59,11 +90,40 @@ const ChatPage: React.FC = () => {
     setActiveConversation(conv);
     setLoadingMessages(true);
 
-    setMessages([]);
-
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      throw new Error("Simulated fetch error");
+      const data = await apiRequest<MessageResponseDto[]>(`/chat/${conv.matchId}`);
+      setMessages(data);
+      // console.log("Fetched messages:", data);
+
+      if (clientRef.current) {
+        clientRef.current.deactivate();
+      }
+
+      const client = new Client({
+        brokerURL: "ws://localhost:8080/ws",
+        reconnectDelay: 5000,
+        connectHeaders: {
+          Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        },
+        debug: (str) => console.log(str),
+      });
+
+      client.onConnect = () => {
+        console.log("Connected to WebSocket!");
+
+        client.subscribe(`/topic/messages/${conv.matchId}`, (message) => {
+          const body: MessageResponseDto = JSON.parse(message.body);
+          setMessages((prev) => [...prev, body]);
+        });
+      };
+
+      client.onStompError = (frame) => {
+        console.error("STOMP error:", frame.headers["message"]);
+        setError("Błąd połączenia WebSocket.");
+      };
+
+      client.activate();
+      clientRef.current = client;
     } catch (err) {
       console.error(err);
       setError("Nie udało się pobrać wiadomości.");
@@ -73,6 +133,19 @@ const ChatPage: React.FC = () => {
   };
 
   const sendMessage = () => {
+    if (!newMessage.trim() || activeConversation === null || !clientRef.current) return;
+
+    const messageRequest: MessageRequestDto = {
+      content: newMessage,
+      writtenBy: currentUserId,
+      matchId: activeConversation.matchId,
+    };
+
+    clientRef.current.publish({
+      destination: `/app/chat/${activeConversation.matchId}`,
+      body: JSON.stringify(messageRequest),
+    });
+
     setNewMessage("");
   };
 
@@ -81,7 +154,8 @@ const ChatPage: React.FC = () => {
       <Navbar />
 
       <div className="flex flex-1 overflow-hidden">
-        {/* lewa kolumna - konwersacje */}
+
+        {/* lista konwersacji */}
         <div className="hidden md:flex flex-col w-1/5 border-r border-secondary overflow-y-auto">
           {loadingConversations ? (
             <div className="p-4 text-gray-400">Ładowanie...</div>
@@ -122,16 +196,16 @@ const ChatPage: React.FC = () => {
           )}
         </div>
 
-        {/* prawa kolumna - wiadomości */}
+        {/* okno wiadomości */}
         <div className="flex flex-col flex-1">
           {activeConversation ? (
             <>
-              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              <div className="flex-1 overflow-y-auto p-4 flex flex-col-reverse gap-3">
                 {loadingMessages ? (
                   <div className="text-gray-400">Ładowanie wiadomości...</div>
                 ) : (
                   messages.map((msg) => {
-                    const isMe = msg.writtenBy === String(currentUserId);
+                    const isMe = msg.writtenBy === currentUserId;
                     return (
                       <div
                         key={msg.id}
@@ -148,6 +222,7 @@ const ChatPage: React.FC = () => {
                           </div>
                         )}
                         <div
+                          title={new Date(msg.timestamp).toLocaleString()}
                           className={`chat-bubble ${
                             isMe
                               ? "bg-primary text-primary-content"
@@ -156,7 +231,7 @@ const ChatPage: React.FC = () => {
                         >
                           <p>{msg.content}</p>
                           <span className="text-xs opacity-50 block">
-                            {new Date(msg.createdAt).toLocaleTimeString()}
+                            {formatTimestamp(Number(msg.timestamp))}
                           </span>
                         </div>
                       </div>
@@ -164,6 +239,7 @@ const ChatPage: React.FC = () => {
                   })
                 )}
               </div>
+              {/* okno wpisywania wiadomości */}
               <div className="p-4 border-t border-secondary flex gap-2">
                 <input
                   type="text"
