@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { apiRequest } from "../api";
 import { Client } from "@stomp/stompjs";
+import { useParams } from "react-router-dom";
 
 const formatTimestamp = (timestamp: number) => {
   const date = new Date(timestamp);
@@ -32,7 +33,7 @@ interface ConversationDto {
 }
 
 interface MessageResponseDto {
-  id: number;
+  messageId: number;
   content: string;
   writtenBy: number;
   timestamp: string;
@@ -53,6 +54,7 @@ const ChatPage: React.FC = () => {
   const [loadingMessages, setLoadingMessages] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showError, setShowError] = useState(true);
+  const { matchId } = useParams<{ matchId: string }>();
 
   const clientRef = useRef<Client | null>(null);
 
@@ -86,6 +88,15 @@ const ChatPage: React.FC = () => {
     fetchConversations();
   }, []);
 
+  useEffect(() => {
+    if (matchId) {
+      const conv = conversations.find(c => c.matchId === Number(matchId));
+      if (conv) {
+        openConversation(conv);
+      }
+    }
+  }, [matchId, conversations]);
+  
   const openConversation = async (conv: ConversationDto) => {
     setActiveConversation(conv);
     setLoadingMessages(true);
@@ -158,7 +169,7 @@ const ChatPage: React.FC = () => {
         {/* lista konwersacji */}
         <div className="hidden md:flex flex-col w-1/5 border-r border-secondary overflow-y-auto">
           {loadingConversations ? (
-            <div className="p-4 text-gray-400">Ładowanie...</div>
+            <div className="p-4 text-gray-400 flex items-center justify-center flex-1">Ładowanie...</div>
           ) : (
             conversations.map((conv) => (
               <button
@@ -208,7 +219,7 @@ const ChatPage: React.FC = () => {
                     const isMe = msg.writtenBy === currentUserId;
                     return (
                       <div
-                        key={msg.id}
+                        key={msg.messageId}
                         className={`chat ${isMe ? "chat-end" : "chat-start"}`}
                       >
                         {!isMe && (

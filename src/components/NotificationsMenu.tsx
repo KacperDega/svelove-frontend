@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { apiRequest } from "../api/apiRequest";
 import { FaBell as BellIcon, FaCheckCircle as MatchIcon, FaComments as ConversationIcon } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 type NotificationDto = {
   id: number;
@@ -16,6 +17,7 @@ const NotificationsMenu = () => {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -43,6 +45,18 @@ const NotificationsMenu = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleNotificationClick = async (notif: NotificationDto) => {
+  try {
+    await apiRequest<void>(`/notifications/read/${notif.id}`, { method: 'POST' });
+
+    navigate(`/chat/${notif.referenceId}`);
+    // console.log("Clicked notification", notif);
+  } catch (error) {
+    console.error("Error marking notification as read:", error);
+    setError(true);
+  }
+};
+
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -63,26 +77,25 @@ const NotificationsMenu = () => {
                 Brak powiadomień
               </p>
             ) : (
-              notifications.map((n) => (
+              notifications.map((notif) => (
                 <div
-                  key={n.id}
+                  key={notif.id}
                   className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer bg-base-100 hover:bg-base-300
-                    ${!n.read ? "font-semibold border-info border-l-4" : ""}
+                    ${!notif.read ? "font-semibold border-info border-l-4" : ""}
                   `}
                   onClick={() => {
-                    // TODO: przekierowania
-                    console.log("Kliknięto powiadomienie", n);
+                    handleNotificationClick(notif);
                   }}
                 >
-                  {n.type === "NEW_MATCH" ? (
+                  {notif.type === "NEW_MATCH" ? (
                     <MatchIcon className="h-5 w-5 text-green-500" />
                   ) : (
                     <ConversationIcon className="h-5 w-5 text-blue-500" />
                   )}
                   <div className="flex flex-col">
-                    <span>{n.message}</span>
+                    <span>{notif.message}</span>
                     <span className="text-xs text-base-content/50">
-                      {new Date(n.createdAt).toLocaleString()}
+                      {new Date(notif.createdAt).toLocaleString()}
                     </span>
                   </div>
                 </div>

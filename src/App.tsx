@@ -42,7 +42,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard/>} />
-        <Route path="/chat/:matchId" element={<Chat />} />
+        <Route path="/chat/:matchId?" element={<Chat />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/profile/edit" element={<EditProfile />} />
         <Route path="/profile/edit/photos" element={<EditPhotos />} />
