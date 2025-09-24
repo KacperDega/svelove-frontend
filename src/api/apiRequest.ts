@@ -29,5 +29,6 @@ export async function apiRequest<T>(
     throw new Error(errorText || "API request failed");
   }
 
-  return response.json();
+  const text = await response.text();
+  return text ? JSON.parse(text) : ({} as T);
 }
