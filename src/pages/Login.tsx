@@ -31,6 +31,9 @@ const Login = () => {
       console.log("Zalogowano, otrzymany token:", response.token);
       // console.log("Zalogowano.");
       localStorage.setItem("jwt", response.token);
+      localStorage.setItem("userId", response.id.toString());
+      localStorage.setItem("username", response.username);
+      localStorage.setItem("profilePhotoUrl", response.profilePhotoUrl);
 
       setSubmitting(false);
       setSuccess(true);

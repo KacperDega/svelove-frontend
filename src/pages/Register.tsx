@@ -145,6 +145,9 @@ const Register = () => {
 
       const response = await login(formData.login, formData.password);
       localStorage.setItem("jwt", response.token);
+      localStorage.setItem("userId", response.id.toString());
+      localStorage.setItem("username", response.username);
+      localStorage.setItem("profilePhotoUrl", response.profilePhotoUrl);
       
       setSubmitting(false);
       setSuccess(true);

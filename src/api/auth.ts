@@ -1,7 +1,7 @@
 import { apiRequest } from "./apiRequest";
 
 export const login = (login: string, password: string) => {
-  return apiRequest<{ token: string; username: string; id: number }>("/login", {
+  return apiRequest<{ token: string; username: string; id: number, profilePhotoUrl: string }>("/login", {
     method: "POST",
     body: JSON.stringify({ login, password }),
   });
