@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { apiRequest } from "../api/apiRequest";
 import { FaBell as BellIcon, FaCheckCircle as MatchIcon, FaComments as ConversationIcon } from "react-icons/fa";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 type NotificationDto = {
   id: number;
@@ -46,16 +46,26 @@ const NotificationsMenu = () => {
   }, []);
 
   const handleNotificationClick = async (notif: NotificationDto) => {
-  try {
-    await apiRequest<void>(`/notifications/read/${notif.id}`, { method: 'POST' });
+    try {
+      await apiRequest<void>(`/notifications/read/${notif.id}`, { method: 'POST' });
 
-    navigate(`/chat/${notif.referenceId}`);
-    // console.log("Clicked notification", notif);
-  } catch (error) {
-    console.error("Error marking notification as read:", error);
-    setError(true);
-  }
-};
+      navigate(`/chat/${notif.referenceId}`);
+      // console.log("Clicked notification", notif);
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+      setError(true);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    try {
+      await apiRequest<void>("/notifications/read-all", { method: "POST" });
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error);
+      setError(true);
+    }
+  };
 
   return (
     <div className="relative" ref={menuRef}>
@@ -72,6 +82,16 @@ const NotificationsMenu = () => {
       {open && (
         <div className="absolute right-0 mt-2 w-72 card bg-neutral shadow-lg z-50 border border-secondary">
           <div className="card-body p-2 max-h-80 overflow-y-auto">
+            {notifications.length !== 0 ? (
+                <button
+                  onClick={() => handleMarkAllAsRead()}
+                  className="text-sm text-accent hover:underline"
+                >
+                  Oznacz wszystkie jako przeczytane
+                </button>
+              ) : null
+            }
+  
             {notifications.length === 0 ? (
               <p className="text-sm text-base-content/70 text-center p-4">
                 Brak powiadomień
