@@ -9,11 +9,12 @@ const Navbar: React.FC = () => {
   const path = location.pathname;
 
   const navItems = [
-    { to: "/dashboard", label: "🏠 Główna", isActive: () => path === "/dashboard" },
+    { to: "/dashboard", label: "🏠 Strona Główna", isActive: () => path === "/dashboard" },
     { to: "/matches", label: "🔥 Dopasowania", isActive: () => path.startsWith("/matches") },
     { to: "/chat", label: "💬 Wiadomości", isActive: () => path.startsWith("/chat") },
-    { to: "/profile", label: "👤 Profil", isActive: () => path.startsWith("/profile") && !path.startsWith("/profile/edit") },
-    { to: "/profile/edit", label: "⚙️ Ustawienia", isActive: () => path.startsWith("/profile/edit") },
+    { to: "/profile", label: "🪪 Profil", isActive: () => path.startsWith("/profile") && !path.startsWith("/profile/edit") },
+    // { to: "/profile/stats", label: "📊 Statystyki", isActive: () => path.startsWith("/profile/stats") },  
+    // { to: "/profile/edit", label: "⚙️ Ustawienia", isActive: () => path.startsWith("/profile/edit") },
   ];
 
   return (

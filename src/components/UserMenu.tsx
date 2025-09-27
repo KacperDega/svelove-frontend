@@ -6,6 +6,7 @@ const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
+  const profilePhotoUrl = localStorage.getItem("profilePhotoUrl");
 
   const handleLogout = () => {
     localStorage.removeItem("jwt");
@@ -13,6 +14,14 @@ const UserMenu = () => {
     localStorage.removeItem("username");
     navigate("/login");
   };
+
+  const menuItems = [
+    { label: "🪪 Mój profil", onClick: () => navigate("/profile") },
+    { label: "📊 Statystyki", onClick: () => navigate("/profile/stats") },
+    { label: "⚙️ Ustawienia", onClick: () => navigate("/profile/edit") },
+    { label: "📸 Zarządzaj zdjęciami", onClick: () => navigate("/profile/edit/photos") },
+    { label: "🚪 Wyloguj", onClick: handleLogout },
+  ];
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -32,7 +41,7 @@ const UserMenu = () => {
         onClick={() => setOpen((prev) => !prev)}
       >
         <img
-          src={placeholder}
+          src={profilePhotoUrl || placeholder}
           alt="User avatar"
           className="h-8 w-8 rounded-full object-cover"
         />
@@ -41,12 +50,15 @@ const UserMenu = () => {
       {open && (
         <div className="absolute right-0 mt-2 w-40 card bg-neutral shadow-lg z-50 border border-secondary">
           <div className="card-body p-2">
-            <button
-              onClick={handleLogout}
-              className="w-full text-left px-3 py-2 rounded-lg hover:bg-base-300"
-            >
-              Wyloguj
-            </button>
+            {menuItems.map((item, index) => (
+              <button
+                key={index}
+                onClick={item.onClick}
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-base-300"
+              >
+                {item.label}
+              </button>
+            ))}
           </div>
         </div>
       )}
