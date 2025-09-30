@@ -82,31 +82,50 @@ const Matches = () => {
     img.onerror = () => reject();
   });
 
-  const handleSkip = () => {
-    const nextMatch = matches[1];
+const goToNextMatch = () => {
+  const nextMatch = matches[1];
 
-    setMatches((prev) => prev.slice(1));
+  setMatches((prev) => prev.slice(1));
 
-    if (matches.length < 6) fetchMatches();
+  if (matches.length < 6) fetchMatches();
 
-    if (nextMatch) {
-      preloadImage(nextMatch.photoUrls[0]);
-    }
-  };
+  if (nextMatch) {
+    preloadImage(nextMatch.photoUrls[0]);
+  }
+};
 
-  const handleLike = async () => {
-    const likedUser = matches[0];
-    setLikeLoading(true);
-    try {
-      await apiRequest<string>(`/matches/like/${likedUser.id}`, { method: "POST" });
-      handleSkip();
-    } catch (e) {
-      console.error(e);
-      setError("BŁĄD: Nie udało się polubić.");
-    } finally {
+const handleSkip = async () => {
+  const skippedUser = matches[0];
+  setLikeLoading(true);
+
+  try {
+    await apiRequest<string>(`/matches/swipe-left/${skippedUser.id}`, {
+      method: "POST",
+    });
+  } catch (e) {
+    console.error(e);
+    setError("BŁĄD: Nie udało się pominąć.");
+  } finally {
     setLikeLoading(false);
-    }
-  };
+    goToNextMatch();
+  }
+};
+
+const handleLike = async () => {
+  const likedUser = matches[0];
+  setLikeLoading(true);
+
+  try {
+    await apiRequest<string>(`/matches/like/${likedUser.id}`, { method: "POST" });
+    goToNextMatch();
+  } catch (e) {
+    console.error(e);
+    setError("BŁĄD: Nie udało się polubić.");
+  } finally {
+    setLikeLoading(false);
+  }
+};
+
 
   if (loading)
     return (
