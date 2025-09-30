@@ -4,11 +4,13 @@ import Navbar from "../components/Navbar";
 import PhotoUploader from "../components/PhotoUploader";
 import { apiRequest } from "../api/apiRequest";
 import { emptyProfile } from "../types";
+import ErrorPopup from "../components/ErrorPopup";
 
 const EditPhotos = () => {
   const [photos, setPhotos] = useState<(File | string)[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showError, setShowError] = useState(true);
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
 
@@ -145,11 +147,7 @@ const EditPhotos = () => {
         </div>
       </div>
 
-      {error && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 alert alert-error max-w-md mx-auto mt-8 z-50">
-          <span>{error}</span>
-        </div>
-      )}
+      <ErrorPopup error={error} showError={showError} setShowError={setShowError}/>
     </div>
   );
 };

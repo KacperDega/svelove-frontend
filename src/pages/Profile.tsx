@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { UserProfileDTO, emptyProfile } from "../types/UserProfileDTO";
 import Navbar from "../components/Navbar";
 import "../index.css";
+import ErrorPopup from "../components/ErrorPopup";
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<UserProfileDTO>(emptyProfile);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showError, setShowError] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -111,11 +113,7 @@ const Profile: React.FC = () => {
 
       </div>
 
-    {error && (
-      <div className="fixed top-4 left-1/2 transform -translate-x-1/2 alert alert-error max-w-md mx-auto mt-8 z-50">
-        <span>{error}</span>
-      </div>
-    )}
+    <ErrorPopup error={error} showError={showError} setShowError={setShowError}/>
   </div>
 );
 

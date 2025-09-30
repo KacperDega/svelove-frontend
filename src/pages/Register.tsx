@@ -8,6 +8,7 @@ import Select from "react-select";
 import PhotoUploader from "../components/PhotoUploader";
 import { getHobbies, getCities } from "../api";
 import { CityDTO, HobbyDTO } from "../types";
+import ErrorPopup from "../components/ErrorPopup";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const Register = () => {
   const [photos, setPhotos] = useState<(File | string)[]>([]);
 
   const [error, setError] = useState<string | null>(null);
-  const [showAlert, setShowAlert] = useState(false);
+  const [showError, setShowError] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
@@ -160,18 +161,6 @@ const Register = () => {
       setSubmitting(false);
     }
   };
-
-  useEffect(() => {
-    setShowAlert(false);
-    if (!error) return;
-
-    const appear = setTimeout(() => setShowAlert(true), 10);
-    const disappear = setTimeout(() => setShowAlert(false), 4000);
-    return () => {
-      clearTimeout(appear);
-      clearTimeout(disappear);
-    };
-  }, [error]);
 
   return (
     <div className="grid grid-rows-[1fr,auto,1fr] h-screen">
@@ -401,21 +390,7 @@ const Register = () => {
 
       <div />
 
-      {error && (
-        <div
-          role="alert"
-          className={`
-            alert alert-error alert-soft fixed bottom-4 right-4 shadow-lg max-w-sm z-50
-            transition-all duration-500 ease-in-out
-            ${
-              showAlert
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-6 pointer-events-none"
-            }`}
-        >
-          <span>{error}</span>
-        </div>
-      )}
+      <ErrorPopup error={error} showError={showError} setShowError={setShowError}/>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar";
 import { apiRequest } from "../api";
 import { Client } from "@stomp/stompjs";
 import { useParams } from "react-router-dom";
+import ErrorPopup from "../components/ErrorPopup";
 
 const formatTimestamp = (timestamp: number) => {
   const date = new Date(timestamp);
@@ -61,14 +62,6 @@ const ChatPage: React.FC = () => {
   const currentUserId = localStorage.getItem("userId")
     ? parseInt(localStorage.getItem("userId")!)
     : 0;
-
-  useEffect(() => {
-    if (error) {
-      setShowError(true);
-      const startFadeTimer = setTimeout(() => setShowError(false), 4500);
-      return () => clearTimeout(startFadeTimer);
-    }
-  }, [error]);
 
   useEffect(() => {
     const fetchConversations = async () => {
@@ -284,18 +277,7 @@ const ChatPage: React.FC = () => {
         </div>
       </div>
 
-      {error && (
-        <div
-          className={`fixed top-4 left-1/2 transform -translate-x-1/2 alert alert-error max-w-md mx-auto mt-8 z-50
-                        transition-all duration-500 ease-in-out  ${
-                          showError
-                            ? "opacity-100 scale-100"
-                            : "opacity-0 scale-90"
-                        }`}
-        >
-          <span>{error}</span>
-        </div>
-      )}
+      <ErrorPopup error={error} showError={showError} setShowError={setShowError}/>
     </div>
   );
 };

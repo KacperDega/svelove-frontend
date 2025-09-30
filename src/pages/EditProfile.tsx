@@ -6,11 +6,13 @@ import { UserProfileDTO, emptyProfile, mapToUpdateDto } from "../types/UserProfi
 import Navbar from "../components/Navbar";
 import { CityDTO, HobbyDTO } from "../types";
 import { getCities, getHobbies } from "../api";
+import ErrorPopup from "../components/ErrorPopup";
 
 const EditProfile: React.FC = () => {
   const [formData, setFormData] = useState<UserProfileDTO>(emptyProfile);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showError, setShowError] = useState(true);
   const navigate = useNavigate();
 
   const [hobbies, setHobbies] = useState<HobbyDTO[]>([]);
@@ -310,11 +312,7 @@ useEffect(() => {
             </div>
           </form>
 
-          {error && (
-            <div className="fixed top-4 left-1/2 transform -translate-x-1/2 alert alert-error max-w-md mx-auto mt-8 z-50">
-              <span>{error}</span>
-            </div>
-          )}
+          <ErrorPopup error={error} showError={showError} setShowError={setShowError}/>
         </div>
       </div>
     </div>

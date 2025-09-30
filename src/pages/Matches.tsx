@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Sex, Preference } from "../types/enums";
 import { apiRequest } from "../api/apiRequest";
+import ErrorPopup from "../components/ErrorPopup";
 
 interface MatchProfile {
   id: number;
@@ -117,12 +118,11 @@ const Matches = () => {
         </div>
       </div>
     );
-  }
 
   const current = matches[0];
 
   return (
-    <div className="flex flex-col h-dvh">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
       <div className="flex flex-1 items-center justify-center bg-base-100 px-4 py-8">
         {current ? (
@@ -183,12 +183,7 @@ const Matches = () => {
         )}
       </div>
 
-      {error && (
-        <div className={`fixed top-4 left-1/2 transform -translate-x-1/2 alert alert-error max-w-md mx-auto mt-8 z-50
-                        transition-all duration-500 ease-in-out  ${showError ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}>
-          <span>{error}</span>
-        </div>
-      )}
+      <ErrorPopup error={error} showError={showError} setShowError={setShowError}/>
     </div>
   );
 };

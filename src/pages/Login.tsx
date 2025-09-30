@@ -3,13 +3,14 @@ import { login } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
 import logo from "../assets/logo1.svg";
+import ErrorPopup from "../components/ErrorPopup";
 
 const Login = () => {
   const navigate = useNavigate();
   const [loginValue, setLoginValue] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [showAlert, setShowAlert] = useState(false);
+  const [showError, setShowError] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -50,20 +51,6 @@ const Login = () => {
       setSubmitting(false);
     }
   };
-
-  useEffect(() => {
-    setShowAlert(false);
-
-    if (!error) return;
-
-    const appearTimeout = setTimeout(() => setShowAlert(true), 10);
-    const disappearTimeout = setTimeout(() => setShowAlert(false), 4000);
-
-    return () => {
-      clearTimeout(appearTimeout);
-      clearTimeout(disappearTimeout);
-    };
-  }, [error]);
 
   return (
     <div className="grid grid-rows-[1fr,auto,1fr] h-screen">
@@ -138,22 +125,7 @@ const Login = () => {
 
       <div />
 
-      {error && (
-        <div
-          role="alert"
-          className={`
-            alert alert-error alert-soft fixed bottom-4 right-4 shadow-lg max-w-sm z-50
-            transition-all duration-500 ease-in-out
-            ${
-              showAlert
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-6 pointer-events-none"
-            }
-          `}
-        >
-          <span>{error}</span>
-        </div>
-      )}
+      <ErrorPopup error={error} showError={showError} setShowError={setShowError}/>
     </div>
   );
 };
