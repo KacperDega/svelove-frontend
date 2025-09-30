@@ -11,6 +11,7 @@ export async function apiRequest<T>(
   if (!(options.body instanceof FormData)) {
     headers["Content-Type"] = "application/json";
   }
+
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -29,6 +30,12 @@ export async function apiRequest<T>(
     throw new Error(errorText || "API request failed");
   }
 
-  const text = await response.text();
-  return text ? JSON.parse(text) : ({} as T);
+  const contentType = response.headers.get("content-type");
+
+  if (contentType && contentType.includes("application/json")) {
+    return await response.json();
+  } else {
+    const text = await response.text();
+    return text as T;
+  }
 }
