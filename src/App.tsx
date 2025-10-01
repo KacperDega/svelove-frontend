@@ -10,9 +10,10 @@ import ProfilePage from './pages/Profile'
 import EditProfile from './pages/EditProfile'
 import EditPhotos from './pages/EditPhotos';
 import Matches from './pages/Matches';
+import UserStats from './pages/UserStats';
 
 const titleMap: Record<string, string> = {
-  '/': 'Strona główna | svelove',
+  '/': 'Witamy! | svelove',
   '/login': 'Logowanie | svelove',
   '/register': 'Rejestracja | svelove',
   '/dashboard': 'Panel użytkownika | svelove',
@@ -21,6 +22,7 @@ const titleMap: Record<string, string> = {
   '/profile/edit': "Edytuj profil | svelove",
   '/profile/edit/photos': "Edytuj zdjęcia | svelove",
   '/matches': "Dopasowania | svelove",
+  '/profile/stats': "Statystyki | svelove",
 };
 
 function TitleUpdater() {
@@ -47,6 +49,7 @@ function App() {
         <Route path="/profile/edit" element={<EditProfile />} />
         <Route path="/profile/edit/photos" element={<EditPhotos />} />
         <Route path='/matches' element={<Matches/>} />
+        <Route path="/profile/stats" element={<UserStats />} />
       </Routes>
     </BrowserRouter>
   );
