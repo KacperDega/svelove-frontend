@@ -11,10 +11,15 @@ import { format } from 'date-fns';
 import { apiRequest } from '../api';
 
 
+type StatsMode = "month" | "year" | "lifetime";
 
 const UserStats: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showError, setShowError] = useState(true);
+
+  const [mode, setMode] = useState<StatsMode>("month");
+
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
 
   const [availablePeriods, setAvailablePeriods] = useState<AvailableStatsDto[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
@@ -30,6 +35,9 @@ const UserStats: React.FC = () => {
         setAvailablePeriods(data);
 
         if (data.length > 0) {
+          const latestYear = data[data.length - 1].year;
+          setSelectedYear(latestYear);
+
           const latest = data[data.length - 1];
           const formatted = `${latest.year}-${String(latest.month).padStart(2, "0")}`;
           setSelectedPeriod(formatted);
@@ -46,22 +54,31 @@ const UserStats: React.FC = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      if (!selectedPeriod) return;
-      const [year, month] = selectedPeriod.split("-").map(Number);
-
+      // console.log("Fetching stats...");
+      // console.log("Mode:", mode);
+      // console.log("Selected period:", selectedPeriod);
+      // console.log("Selected year:", selectedYear);
       try {
-        const data = await apiRequest<UserStatsDTO>(`/profile/stats/${year}/${month}`);
-        setStats(data);
+        if (mode === "month" && selectedPeriod) {
+          const [year, month] = selectedPeriod.split("-").map(Number);
+          const data = await apiRequest<UserStatsDTO>(`/profile/stats/${year}/${month}`);
+          setStats(data);
+        } else if (mode === "year" && selectedYear) {
+          const data = await apiRequest<UserStatsDTO>(`/profile/stats/${selectedYear}`);
+          setStats(data);
+        } else if (mode === "lifetime") {
+          const data = await apiRequest<UserStatsDTO>(`/profile/stats/lifetime`);
+          setStats(data);
+        }
       } catch (err) {
         console.error(err);
         setError("Nie udało się pobrać statystyk.");
       }
     };
-
     fetchStats();
-  }, [selectedPeriod]);
+  }, [mode, selectedPeriod, selectedYear]);
 
-  const handleDateChange = (date: Date | null) => {
+ const handleDateChange = (date: Date | null) => {
     if (date) {
       const formattedDate = format(date, "yyyy-MM");
       setSelectedPeriod(formattedDate);
@@ -136,48 +153,81 @@ const UserStats: React.FC = () => {
       <div className="flex-grow bg-base-100 p-6">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 text-center">
-            <h1 className="text-3xl font-extrabold text-content drop-shadow-lg inline-flex items-center justify-center select-none">
-              Twoje cyfrowe podboje z miesiąca&nbsp;
-              <span
-                onClick={openDatePicker}
-                className="underline decoration-dotted decoration-primary cursor-pointer hover:text-primary-focus transition-colors"
-                title="Kliknij, żeby zmienić miesiąc"
-              >
-                {formattedMonth}
-              </span>
-            </h1>
 
-            <DatePicker
-              ref={datePickerRef}
-              selected={startDate}
-              onChange={handleDateChange}
-              dateFormat="yyyy-MM"
-              showMonthYearPicker
-              className="hidden"
-              disabledKeyboardNavigation
-              locale={pl}
-              minDate={
-                availablePeriods.length > 0
-                  ? new Date(
-                      availablePeriods[0].year,
-                      availablePeriods[0].month - 1,
-                      1
-                    )
-                  : undefined
-              }
-              maxDate={
-                availablePeriods.length > 0
-                  ? new Date(
-                      availablePeriods[availablePeriods.length - 1].year,
-                      availablePeriods[availablePeriods.length - 1].month - 1,
-                      1
-                    )
-                  : undefined
-              }
-            />
+            {mode === "month" && (
+              <h1 className="text-3xl font-extrabold text-content drop-shadow-lg inline-flex items-center justify-center select-none">
+                Twoje cyfrowe podboje z miesiąca&nbsp;
+                <span
+                  onClick={openDatePicker}
+                  className="underline decoration-dotted decoration-primary cursor-pointer hover:text-primary-focus transition-colors"
+                  title="Kliknij, żeby zmienić miesiąc"
+                >
+                  {formattedMonth}
+                </span>
+              </h1>
+            )}
+
+            {mode === "year" && (
+              <h1 className="text-3xl font-extrabold text-content drop-shadow-lg inline-flex items-center justify-center select-none">
+                Twoje cyfrowe podboje w roku&nbsp;
+                <select
+                  value={selectedYear ?? ""}
+                  onChange={(e) => setSelectedYear(Number(e.target.value))}
+                  className="ml-2 select select-sm select-bordered"
+                >
+                  {Array.from(new Set(availablePeriods.map((p) => p.year)))
+                    .sort()
+                    .map((y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
+                    ))}
+                </select>
+              </h1>
+            )}
+
+            {mode === "lifetime" && (
+              <h1 className="text-3xl font-extrabold text-content drop-shadow-lg text-center select-none">
+                Twoje cyfrowe podboje w całym okresie
+              </h1>
+            )}
+
+            {/* month DatePicker */}
+            {mode === "month" && (
+              <DatePicker
+                ref={datePickerRef}
+                selected={startDate}
+                onChange={handleDateChange}
+                dateFormat="yyyy-MM"
+                showMonthYearPicker
+                className="hidden"
+                disabledKeyboardNavigation
+                locale={pl}
+                minDate={
+                  availablePeriods.length > 0
+                    ? new Date(
+                        availablePeriods[0].year,
+                        availablePeriods[0].month - 1,
+                        1
+                      )
+                    : undefined
+                }
+                maxDate={
+                  availablePeriods.length > 0
+                    ? new Date(
+                        availablePeriods[availablePeriods.length - 1].year,
+                        availablePeriods[availablePeriods.length - 1].month - 1,
+                        1
+                      )
+                    : undefined
+                }
+              />
+            )}
 
             <p className="text-base-content mt-2 opacity-70">
-              Zobacz, jak Ci poszło w tym miesiącu 👀
+              {mode === "month" && "Zobacz, jak Ci poszło w tym miesiącu 👀"}
+              {mode === "year" && "Zobacz, jak Ci poszło w wybranym roku 📊"}
+              {mode === "lifetime" && "Podsumowanie Twojej całej aktywności 🚀"}
             </p>
           </div>
 
@@ -245,10 +295,26 @@ const UserStats: React.FC = () => {
                 </div>
               </section>
 
-              <div className="text-right text-sm text-base-content/60 italic mt-6">
-                ⏰ Ostatnia aktualizacja:{" "}
-                <span className="font-mono">{updatedDate}</span>
+              <div className="flex justify-between items-center mt-6 text-sm">
+                <label className="flex items-center space-x-2">
+                  <span>Tryb:</span>
+                  <select
+                    value={mode}
+                    onChange={(e) => setMode(e.target.value as StatsMode)}
+                    className="select select-bordered select-sm"
+                  >
+                    <option value="month">Miesiąc</option>
+                    <option value="year">Rok</option>
+                    <option value="lifetime">Całość</option>
+                  </select>
+                </label>
+
+                <div className="text-base-content/60 italic">
+                  ⏰ Ostatnia aktualizacja:{" "}
+                  <span className="font-mono">{updatedDate}</span>
+                </div>
               </div>
+              
             </div>
           </div>
         </div>
