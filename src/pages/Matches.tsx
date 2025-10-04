@@ -3,18 +3,8 @@ import Navbar from "../components/Navbar";
 import { Sex, Preference } from "../types/enums";
 import { apiRequest } from "../api/apiRequest";
 import ErrorPopup from "../components/ErrorPopup";
+import { MatchProfile } from "../types";
 
-interface MatchProfile {
-  id: number;
-  username: string;
-  sex: Sex;
-  age: number;
-  localization: string;
-  preference: Preference;
-  hobbies: string[];
-  description: string;
-  photoUrls: string[];
-}
 
 const translateSex = (sex: Sex) => {
   switch (sex) {
