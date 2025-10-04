@@ -37,6 +37,10 @@ const Matches = () => {
   const [likeLoading, setLikeLoading] = useState(false);
   const [showError, setShowError] = useState(true);
 
+  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
+  const [isSwiping, setIsSwiping] = useState(false);
+
+
   useEffect(() => {
     if (error) {
       setShowError(true);
@@ -72,49 +76,55 @@ const Matches = () => {
     img.onerror = () => reject();
   });
 
-const goToNextMatch = () => {
-  const nextMatch = matches[1];
+  const goToNextMatch = async () => {
+    const nextMatch = matches[1];
 
-  setMatches((prev) => prev.slice(1));
+    if (nextMatch) {
+      try {
+        await preloadImage(nextMatch.photoUrls[0]);
+      } catch (e) {
+        console.warn("Nie udało się prezaładować zdjęcia.");
+      }
+    }
 
-  if (matches.length < 6) fetchMatches();
+    setMatches((prev) => prev.slice(1));
 
-  if (nextMatch) {
-    preloadImage(nextMatch.photoUrls[0]);
-  }
-};
+    if (matches.length < 6) fetchMatches();
+  };
 
-const handleSkip = async () => {
-  const skippedUser = matches[0];
-  setLikeLoading(true);
+  const handleSkip = async () => {
+    const skippedUser = matches[0];
+    setLikeLoading(true);
+    setSwipeDirection('left');
+    setIsSwiping(true);
 
-  try {
-    await apiRequest<string>(`/matches/swipe-left/${skippedUser.id}`, {
-      method: "POST",
-    });
-  } catch (e) {
-    console.error(e);
-    setError("BŁĄD: Nie udało się pominąć.");
-  } finally {
-    setLikeLoading(false);
-    goToNextMatch();
-  }
-};
+    try {
+      await apiRequest<string>(`/matches/swipe-left/${skippedUser.id}`, {
+        method: "POST",
+      });
+    } catch (e) {
+      console.error(e);
+      setError("BŁĄD: Nie udało się pominąć.");
+    } finally {
+      setLikeLoading(false);
+    }
+  };
 
-const handleLike = async () => {
-  const likedUser = matches[0];
-  setLikeLoading(true);
+  const handleLike = async () => {
+    const likedUser = matches[0];
+    setLikeLoading(true);
+    setSwipeDirection('right');
+    setIsSwiping(true);
 
-  try {
-    await apiRequest<string>(`/matches/like/${likedUser.id}`, { method: "POST" });
-    goToNextMatch();
-  } catch (e) {
-    console.error(e);
-    setError("BŁĄD: Nie udało się polubić.");
-  } finally {
-    setLikeLoading(false);
-  }
-};
+    try {
+      await apiRequest<string>(`/matches/like/${likedUser.id}`, { method: "POST" });
+    } catch (e) {
+      console.error(e);
+      setError("BŁĄD: Nie udało się polubić.");
+    } finally {
+      setLikeLoading(false);
+    }
+  };
 
 
   if (loading)
@@ -135,7 +145,20 @@ const handleLike = async () => {
       <Navbar />
       <div className="flex flex-1 items-center justify-center bg-base-100 px-4 py-8">
         {current ? (
-          <div className="card w-full max-w-2xl bg-neutral shadow-2xl border border-secondary">
+          <div
+            className={`card w-full max-w-2xl bg-neutral shadow-2xl border border-secondary transition-transform duration-500 ${
+              swipeDirection === "left"
+                ? "animate-swipe-left"
+                : swipeDirection === "right"
+                ? "animate-swipe-right"
+                : ""
+            }`}
+            onAnimationEnd={async () => {
+              await goToNextMatch();
+              setSwipeDirection(null);
+              setIsSwiping(false);
+            }}
+          >
             <figure className="h-[550px] overflow-hidden">
               <img
                 src={current.photoUrls[0]}
