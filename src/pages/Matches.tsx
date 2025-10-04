@@ -39,6 +39,7 @@ const Matches = () => {
 
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
   const [isSwiping, setIsSwiping] = useState(false);
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
 
 
   useEffect(() => {
@@ -87,6 +88,7 @@ const Matches = () => {
       }
     }
 
+    setActivePhotoIndex(0);
     setMatches((prev) => prev.slice(1));
 
     if (matches.length < 6) fetchMatches();
@@ -99,9 +101,7 @@ const Matches = () => {
     setIsSwiping(true);
 
     try {
-      await apiRequest<string>(`/matches/swipe-left/${skippedUser.id}`, {
-        method: "POST",
-      });
+      await apiRequest<string>(`/matches/swipe-left/${skippedUser.id}`, { method: "POST" });
     } catch (e) {
       console.error(e);
       setError("BŁĄD: Nie udało się pominąć.");
@@ -154,18 +154,39 @@ const Matches = () => {
                 : ""
             }`}
             onAnimationEnd={async () => {
-              await goToNextMatch();
+              if (isSwiping) await goToNextMatch();
               setSwipeDirection(null);
               setIsSwiping(false);
             }}
           >
-            <figure className="h-[550px] overflow-hidden">
-              <img
-                src={current.photoUrls[0]}
-                alt={current.username}
-                className="object-cover w-full h-full"
-              />
-            </figure>
+            <div className="relative h-[550px] w-full overflow-hidden rounded-t-2xl">
+              <div
+                className="flex h-full transition-transform duration-300 ease-in-out"
+                style={{ transform: `translateX(-${activePhotoIndex * 100}%)` }}
+              >
+                {current.photoUrls.map((url, index) => (
+                  <img
+                    key={index}
+                    src={url}
+                    alt={`${current.username} - zdjęcie ${index + 1}`}
+                    className="h-full w-full flex-shrink-0 object-cover"
+                  />
+                ))}
+              </div>
+
+              {current.photoUrls.length > 1 && (
+                <div className="absolute top-1/2 left-4 right-4 flex -translate-y-1/2 transform justify-between">
+                  <button
+                    onClick={() => setActivePhotoIndex((prev) => (prev - 1 + current.photoUrls.length) % current.photoUrls.length)}
+                    className="btn btn-circle btn-sm"
+                  >❮</button>
+                  <button
+                    onClick={() => setActivePhotoIndex((prev) => (prev + 1) % current.photoUrls.length)}
+                    className="btn btn-circle btn-sm"
+                  >❯</button>
+                </div>
+              )}
+            </div>
             <div className="card-body">
               <h2 className="card-title text-3xl text-primary flex items-end gap-2">
                 {current.username}, {current.age}
