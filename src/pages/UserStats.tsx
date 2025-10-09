@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import {  FaCommentDots,  FaCommentSlash,  FaArrowLeft,  FaArrowRight,} from 'react-icons/fa';
 import Navbar from '../components/Navbar';
 import ErrorPopup from '../components/ErrorPopup';
-import { UserStatsDTO, AvailableStatsDto } from '../types';
+import { UserStatsDto, AvailableStatsDto } from '../types';
 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -24,7 +24,7 @@ const UserStats: React.FC = () => {
   const [availablePeriods, setAvailablePeriods] = useState<AvailableStatsDto[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
-  const [stats, setStats] = useState<UserStatsDTO | null>(null);
+  const [stats, setStats] = useState<UserStatsDto | null>(null);
 
   const datePickerRef = useRef<DatePicker | null>(null);
 
@@ -61,13 +61,13 @@ const UserStats: React.FC = () => {
       try {
         if (mode === "month" && selectedPeriod) {
           const [year, month] = selectedPeriod.split("-").map(Number);
-          const data = await apiRequest<UserStatsDTO>(`/profile/stats/${year}/${month}`);
+          const data = await apiRequest<UserStatsDto>(`/profile/stats/${year}/${month}`);
           setStats(data);
         } else if (mode === "year" && selectedYear) {
-          const data = await apiRequest<UserStatsDTO>(`/profile/stats/${selectedYear}`);
+          const data = await apiRequest<UserStatsDto>(`/profile/stats/${selectedYear}`);
           setStats(data);
         } else if (mode === "lifetime") {
-          const data = await apiRequest<UserStatsDTO>(`/profile/stats/lifetime`);
+          const data = await apiRequest<UserStatsDto>(`/profile/stats/lifetime`);
           setStats(data);
         }
       } catch (err) {

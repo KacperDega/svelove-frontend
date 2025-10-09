@@ -1,4 +1,4 @@
-export type UserStatsDTO = {
+export type UserStatsDto = {
   year: number;
   month: number;
   leftSwipes: number;

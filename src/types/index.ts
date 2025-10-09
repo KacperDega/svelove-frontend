@@ -3,3 +3,4 @@ export * from "./HobbyDTO";
 export * from "./UserProfileDTO";
 export * from "./StatsDTO";
 export * from "./MatchProfileDTO";
+export * from "./NotificationDTO";

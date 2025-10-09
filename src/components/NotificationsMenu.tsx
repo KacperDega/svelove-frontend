@@ -2,15 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { apiRequest } from "../api/apiRequest";
 import { FaBell as BellIcon, FaCheckCircle as MatchIcon, FaComments as ConversationIcon } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-
-type NotificationDto = {
-  id: number;
-  message: string;
-  type: "NEW_CONVERSATION" | "NEW_MATCH";
-  referenceId: number;
-  read: boolean;
-  createdAt: string;
-};
+import { NotificationDto } from "../types";
 
 const NotificationsMenu = () => {
   const [notifications, setNotifications] = useState<NotificationDto[]>([]);
