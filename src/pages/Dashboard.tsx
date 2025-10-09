@@ -1,90 +1,205 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
+import ErrorPopup from "../components/ErrorPopup";
+import { useNavigate } from "react-router-dom";
+import { apiRequest } from "../api/apiRequest";
+import { DashboardDto } from "../types";
 
-const Dashboard = () => {
+
+const Dashboard: React.FC = () => {
+  const [data, setData] = useState<DashboardDto | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showError, setShowError] = useState(true);
+  const navigate = useNavigate();
+
+  
+  async function fetchDashboard() {
+    setLoading(true);
+    setError(null);
+    try {
+      const dto = await apiRequest<DashboardDto>("/dashboard");
+      setData(dto);
+    } catch (err: any) {
+      console.error("Error fetching dashboard:", err);
+      setError(err.message || "Błąd podczas ładowania danych");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
+
+  // LOADING SCREEN
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-base-100 text-base-content font-sans">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="loading loading-spinner text-primary w-10 h-10 mb-4"></div>
+            <p className="text-lg font-medium text-base-content/80">Ładowanie danych...</p>
+          </div>
+        </main>
+        <ErrorPopup error={error} showError={!!error} setShowError={setShowError} />
+      </div>
+    );
+  }
+
+  // ERROR SCREEN
+  if (error) {
+    return (
+      <div className="min-h-screen flex flex-col bg-base-100 text-base-content font-sans">
+        <Navbar />
+        <main className="flex-1 flex flex-col items-center justify-center space-y-6 p-6 text-center">
+          <div className="text-6xl">😔</div>
+          <h2 className="text-2xl font-semibold text-primary">Coś poszło nie tak</h2>
+          <p className="text-lg text-base-content/80 max-w-md">
+            {error || "Wystąpił problem podczas ładowania danych. Spróbuj ponownie."}
+          </p>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              setError(null);
+              fetchDashboard();
+            }}
+          >
+            Spróbuj ponownie
+          </button>
+        </main>
+        <ErrorPopup error={error} showError={!!error} setShowError={setShowError} />
+      </div>
+    );
+  }
+
+
+  const {
+    username,
+    profilePictureUrl,
+    newMatchesCount,
+    newMessagesCount,
+    notifications,
+    currentMonthStats,
+  } = data!;
+
   return (
     <div className="min-h-screen bg-base-100 text-base-content font-sans">
-      {/* Pasek nawigacji */}
-      <nav className="fixed bottom-0 left-0 right-0 flex justify-around p-4 text-sm shadow md:relative md:top-0 md:justify-start md:space-x-8 md:p-6 bg-neutral">
-        <a href="#" className="font-bold text-primary">
-          🏠 Główna
-        </a>
-        <a href="#" className="hover:brightness-125 text-secondary font-medium">
-          🔥 Dopasowania
-        </a>
-        <a href="#" className="hover:brightness-125 text-secondary font-medium">
-          💬 Wiadomości
-        </a>
-        <a href="#" className="hover:brightness-125 text-secondary font-medium">
-          👤 Profil
-        </a>
-        <a href="#" className="hover:brightness-125 text-secondary font-medium">
-          ⚙️ Ustawienia
-        </a>
-      </nav>
+      <Navbar />
 
       <main className="mx-auto mt-6 mb-20 max-w-3xl space-y-8 p-6 md:mb-6">
         {/* Powitanie */}
         <section className="rounded-lg bg-neutral p-6 shadow">
-          <h1 className="text-3xl font-bold text-primary">Cześć, Ania! 👋</h1>
-          <p className="text-base-content/70">
-            Masz <span className="font-semibold text-secondary">3 nowe dopasowania</span> i{" "}
-            <span className="font-semibold text-secondary">1 nową wiadomość</span>.
-          </p>
+          <div className="flex items-center space-x-4">
+            <img
+              src={profilePictureUrl ?? "https://picsum.photos/64"}
+              alt="Zdjęcie profilowe"
+              className="w-16 h-16 rounded-full object-cover border border-base-300"
+            />
+            <div>
+              <h1 className="text-3xl font-bold text-primary">Cześć, {username}! 👋</h1>
+              <p className="text-base-content/70">
+                Masz <span className="font-semibold text-secondary">{newMatchesCount} nowe dopasowania</span> i{" "}
+                <span className="font-semibold text-secondary">{newMessagesCount} nowych wiadomości</span>.
+              </p>
+            </div>
+          </div>
         </section>
 
         {/* Szybkie akcje */}
         <section className="rounded-lg bg-neutral p-6 shadow">
-          <h2 className="mb-5 text-2xl font-semibold text-primary">Szybkie akcje</h2>
+          <h2 className="mb-5 text-2xl font-semibold text-primary">🚀 Szybkie akcje</h2>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <button className="btn btn-primary">🔥 Dopasowania</button>
-            <button className="btn btn-info">💬 Wiadomości</button>
-            <button className="btn btn-success">📝 Uzupełnij profil</button>
-            <button className="btn btn-warning">📸 Dodaj zdjęcie</button>
+            <button className="btn btn-primary" onClick={() => navigate("/matches")}>
+              🔥 Dopasowania
+            </button>
+            <button className="btn btn-info" onClick={() => navigate("/chat")}>
+              💬 Wiadomości
+            </button>
+            <button className="btn btn-success" onClick={() => navigate("/profile")}>
+              👤 Twój profil
+            </button>
+            <button className="btn btn-warning" onClick={() => navigate("/profile/edit/photos")}>
+              📸 Edytuj zdjęcia
+            </button>
           </div>
         </section>
 
-        {/* Ostatnie aktywności / Ostatnie powiadomienia*/}
+        {/* Ostatnie powiadomienia */}
         <section className="rounded-lg bg-neutral p-6 shadow">
-          <h2 className="mb-2 text-2xl font-semibold text-primary">Ostatnie aktywności</h2>
+          <h2 className="mb-2 text-2xl font-semibold text-primary">⏰ Ostatnie aktywności</h2>
           <ul className="space-y-2">
-            <li>
-              ❤️ <strong>Kamil</strong> polubił Twój profil
-            </li>
-            <li>
-              👀 <strong>Ola</strong> odwiedziła Twój profil
-            </li>
-            <li>
-              📨 Masz wiadomość od <strong>Michał</strong>
-            </li>
+            {notifications.map((n) => {
+              let emoji = "";
+              if (n.type === "NEW_MATCH") {
+                emoji = "❤️";
+              } else if (n.type === "NEW_CONVERSATION") {
+                emoji = "📝";
+              } else {
+                emoji = "🔔";
+              }
+
+              const words = n.message.trim().split(" ");
+              const username = words.pop(); // ostatnie słowo to nazwa użytkownika
+              const messageWithoutUsername = words.join(" ");
+
+              return (
+                <li key={n.id}>
+                  {emoji} {messageWithoutUsername} <strong>{username}</strong>
+                </li>
+              );
+            })}
           </ul>
         </section>
 
-        {/* Status konta ???? */}
+        {/* Statystyki miesięczne */}
         <section className="rounded-lg bg-neutral p-6 shadow">
-          <h2 className="mb-2 text-2xl font-semibold text-primary">Status konta</h2>
-          <p className="mb-2 text-base-content/70">
-            Twój profil jest uzupełniony w <strong>60%</strong>
-          </p>
-          <progress className="progress progress-secondary w-full h-4" value={60} max={100} />
-          <a href="#" className="mt-2 inline-block link link-secondary">
-            Uzupełnij brakujące informacje
-          </a>
+          <h2 className="mb-2 text-2xl font-semibold text-primary">📊 Statystyki aktualnego miesiąca</h2>
+          <div className="flex space-x-8 text-base-content justify-between px-6">
+            <div className="flex items-center">
+              <span className="text-3xl mr-2">⬅️</span>
+              <div>
+                <p className="font-semibold">Swipe w lewo:</p>
+                <p className="text-center">{currentMonthStats.leftSwipes}</p>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <span className="text-3xl mr-2">➡️</span>
+              <div>
+                <p className="font-semibold">Swipe w prawo:</p>
+                <p className="text-center">{currentMonthStats.rightSwipes}</p>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <span className="text-3xl mr-2">❤️</span>
+              <div>
+                <p className="font-semibold">Matchy:</p>
+                <p className="text-center">{currentMonthStats.matches}</p>
+              </div>
+            </div>
+          </div>
         </section>
 
-        {/* Co nowego ???? */}
+        {/* Co nowego? */}
         <section className="rounded-lg bg-neutral p-6 shadow">
-          <h2 className="mb-2 text-2xl font-semibold text-primary">Co nowego?</h2>
-          <div className="space-y-2 text-base-content/80">
+          <h2 className="mb-2 text-2xl font-semibold text-primary">✨ Co nowego?</h2>
+          <div className="space-y-2 text-base-content">
             <p>
-              🆕 <strong>Nowość:</strong> Zobacz ostatnie wydarzenia w sekcji{" "}
-              <strong>Ostatnie Aktywności</strong>!
+              🆕 <strong>Nowość:</strong> Zobacz swoje statystyki dopasowań w sekcji&nbsp;
+              <strong onClick={() => navigate("/profile/stats")} className="cursor-pointer hover:underline">
+                📊 Statystyki
+              </strong>
+              !
             </p>
             <p>
-              💡 <strong>Tip:</strong> Dodaj uśmiechnięte zdjęcie – zwiększasz szansę na match!
+              💡 <strong>Tip:</strong> Dodaj uśmiechnięte zdjęcie - zwiększasz szansę na match! 😊
             </p>
           </div>
         </section>
       </main>
+
+      <ErrorPopup error={error} showError={showError} setShowError={setShowError} />
     </div>
   );
 };
