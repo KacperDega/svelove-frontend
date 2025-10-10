@@ -18,6 +18,9 @@ module.exports = {
         'swipe-right': 'swipe-right 0.5s ease-in-out forwards',
       },
     },
+    fontFamily: {
+      teaspoon: ["Teaspoon", "sans-serif"],
+    },
   },
   plugins: [require("daisyui")],
   daisyui: {

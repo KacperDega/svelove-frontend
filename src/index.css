@@ -22,3 +22,11 @@ html {
   overflow-y: scroll;
   scroll-behavior: smooth;
 }
+
+@font-face {
+  font-family: 'Teaspoon';
+  src: url('/public/Teaspoon.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
