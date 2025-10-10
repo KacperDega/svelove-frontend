@@ -9,6 +9,7 @@ import PhotoUploader from "../components/PhotoUploader";
 import { getHobbies, getCities } from "../api";
 import { CityDTO, HobbyDTO } from "../types";
 import ErrorPopup from "../components/ErrorPopup";
+import Header from "../components/Header";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -163,232 +164,237 @@ const Register = () => {
   };
 
   return (
-    <div className="grid grid-rows-[1fr,auto,1fr] h-screen">
-      <div className="flex items-end justify-center">
-        <img src={logo} alt="Logo" className="object-contain h-24" />
-      </div>
+    <div className="min-h-screen flex flex-col">
+      
+      <Header />
 
-      <div className="flex justify-center">
-        <div
-          className={`bg-neutral shadow-md rounded-xl p-6 w-full 
-                      ${step === 3 ? "max-w-full sm:max-w-3xl" : "max-w-md"}
-                      border border-secondary text-center flex flex-col space-y-4`}
-        >
-          <h3 className="text-3xl font-semibold">
-            {step === 1 && "Rejestracja - krok 1"}
-            {step === 2 && "Rejestracja - krok 2"}
-            {step === 3 && "Rejestracja - zdjęcia"}
-          </h3>
-
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col space-y-4"
-          >
-            {step === 1 && (
-              <>
-                {/* KROK 1 */}
-                <input
-                  type="text"
-                  name="username"
-                  placeholder="Nazwa użytkownika"
-                  value={formData.username}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  required
-                />
-                <input
-                  type="text"
-                  name="login"
-                  placeholder="Login"
-                  value={formData.login}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  required
-                />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="Hasło"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  required
-                />
-                <select
-                  name="sex"
-                  value={formData.sex}
-                  onChange={handleChange}
-                  className="select select-bordered"
-                  required
-                >
-                  <option value="">Płeć</option>
-                  <option value="Male">Mężczyzna</option>
-                  <option value="Female">Kobieta</option>
-                  <option value="Other">Inna</option>
-                </select>
-                <input
-                  type="number"
-                  name="age"
-                  placeholder="Wiek"
-                  value={formData.age}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  required
-                />
-                <div className="flex justify-between space-x-2">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => navigate("/")}
-                  >
-                    Powrót
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary px-14"
-                    onClick={nextStep}
-                  >
-                    Dalej
-                  </button>
-                </div>
-              </>
-            )}
-
-            {step === 2 && (
-              <>
-                {/* KROK 2 */}
-                <select
-                  name="cityId"
-                  value={formData.cityId}
-                  onChange={handleChange}
-                  className="select select-bordered"
-                  required
-                >
-                  <option value="">Wybierz miasto</option>
-                  {cities.map((city) => (
-                    <option key={city.id} value={city.id}>
-                      {city.name}
-                    </option>
-                  ))}
-                </select>
-
-                <textarea
-                  name="description"
-                  placeholder="Opis"
-                  value={formData.description}
-                  onChange={handleChange}
-                  className="textarea textarea-bordered"
-                  maxLength={225}
-                  required
-                />
-
-                <select
-                  name="preference"
-                  value={formData.preference}
-                  onChange={handleChange}
-                  className="select select-bordered"
-                  required
-                >
-                  <option value="">Preferencje</option>
-                  <option value="Men">Mężczyźni</option>
-                  <option value="Women">Kobiety</option>
-                  <option value="Both">Oboje</option>
-                  <option value="Other">Inne</option>
-                </select>
-
-                <input
-                  type="number"
-                  name="age_min"
-                  placeholder="Minimalny wiek partnera"
-                  value={formData.age_min}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  required
-                />
-                <input
-                  type="number"
-                  name="age_max"
-                  placeholder="Maksymalny wiek partnera"
-                  value={formData.age_max}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  required
-                />
-
-                <Select
-                  className="text-primary-content"
-                  options={hobbies.map((h) => ({
-                    value: h.id,
-                    label: h.label,
-                  }))}
-                  value={selectedHobbies}
-                  onChange={handleHobbyChange}
-                  isMulti={true}
-                  placeholder="Wybierz hobby"
-                />
-
-                <div className="flex justify-between space-x-2">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={previousStep}
-                  >
-                    Powrót
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={nextStep}
-                  >
-                    Dalej
-                  </button>
-                </div>
-              </>
-            )}
-
-            {step === 3 && (
-              <>
-                {/* KROK 3 */}
-                <PhotoUploader maxFiles={5} value={photos} onChange={setPhotos} />
-
-                <div className="flex justify-between space-x-2 mt-4">
-                  <button
-                    type="button"
-                    className={`btn btn-secondary ${submitting ? "opacity-65 cursor-not-allowed pointer-events-none" : ""}`}
-                    onClick={previousStep}
-                  >
-                    Powrót
-                  </button>
-                  
-                  <button
-                    type="submit"
-                    className={`btn btn-primary 
-                      ${submitting || success ? "opacity-65 cursor-not-allowed pointer-events-none" : ""}
-                      ${success ? "bg-success border-success hover:bg-success hover:border-success" : ""}
-                    `}
-                  >
-                    {success ? (
-                      <span className="flex items-center gap-2">
-                        <span className="animate-bounce">✅</span>
-                        <span>Zarejestrowano</span>
-                      </span>
-                    ) : submitting ? (
-                      <span className="flex items-center gap-2">
-                        <span className="loading loading-spinner loading-sm"></span>
-                        <span>Rejestracja...</span>
-                      </span>
-                    ) : (
-                      "Zarejestruj się"
-                    )}
-                  </button>
-                </div>
-              </>
-            )}
-          </form>
+      <main className="flex-grow flex flex-col items-center justify-center p-4">
+        <div className="flex items-end justify-center mb-4">
+          <h1 className="text-8xl font-teaspoon text-primary select-none">
+            svelove
+          </h1>
         </div>
-      </div>
 
-      <div />
+          <div className="flex justify-center w-full">
+          <div
+            className={`bg-neutral shadow-md rounded-xl p-6 w-full 
+                        ${step === 3 ? "max-w-full sm:max-w-3xl" : "max-w-md"}
+                        border border-secondary text-center flex flex-col space-y-4`}
+          >
+            <h3 className="text-3xl font-semibold">
+              {step === 1 && "Rejestracja - krok 1"}
+              {step === 2 && "Rejestracja - krok 2"}
+              {step === 3 && "Rejestracja - zdjęcia"}
+            </h3>
+
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col space-y-4"
+            >
+              {step === 1 && (
+                <>
+                  {/* KROK 1 */}
+                  <input
+                    type="text"
+                    name="username"
+                    placeholder="Nazwa użytkownika"
+                    value={formData.username}
+                    onChange={handleChange}
+                    className="input input-bordered"
+                    required
+                  />
+                  <input
+                    type="text"
+                    name="login"
+                    placeholder="Login"
+                    value={formData.login}
+                    onChange={handleChange}
+                    className="input input-bordered"
+                    required
+                  />
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Hasło"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="input input-bordered"
+                    required
+                  />
+                  <select
+                    name="sex"
+                    value={formData.sex}
+                    onChange={handleChange}
+                    className="select select-bordered"
+                    required
+                  >
+                    <option value="">Płeć</option>
+                    <option value="Male">Mężczyzna</option>
+                    <option value="Female">Kobieta</option>
+                    <option value="Other">Inna</option>
+                  </select>
+                  <input
+                    type="number"
+                    name="age"
+                    placeholder="Wiek"
+                    value={formData.age}
+                    onChange={handleChange}
+                    className="input input-bordered"
+                    required
+                  />
+                  <div className="flex justify-between space-x-2">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => navigate("/")}
+                    >
+                      Powrót
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-primary px-14"
+                      onClick={nextStep}
+                    >
+                      Dalej
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {step === 2 && (
+                <>
+                  {/* KROK 2 */}
+                  <select
+                    name="cityId"
+                    value={formData.cityId}
+                    onChange={handleChange}
+                    className="select select-bordered"
+                    required
+                  >
+                    <option value="">Wybierz miasto</option>
+                    {cities.map((city) => (
+                      <option key={city.id} value={city.id}>
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+
+                  <textarea
+                    name="description"
+                    placeholder="Opis"
+                    value={formData.description}
+                    onChange={handleChange}
+                    className="textarea textarea-bordered"
+                    maxLength={225}
+                    required
+                  />
+
+                  <select
+                    name="preference"
+                    value={formData.preference}
+                    onChange={handleChange}
+                    className="select select-bordered"
+                    required
+                  >
+                    <option value="">Preferencje</option>
+                    <option value="Men">Mężczyźni</option>
+                    <option value="Women">Kobiety</option>
+                    <option value="Both">Oboje</option>
+                    <option value="Other">Inne</option>
+                  </select>
+
+                  <input
+                    type="number"
+                    name="age_min"
+                    placeholder="Minimalny wiek partnera"
+                    value={formData.age_min}
+                    onChange={handleChange}
+                    className="input input-bordered"
+                    required
+                  />
+                  <input
+                    type="number"
+                    name="age_max"
+                    placeholder="Maksymalny wiek partnera"
+                    value={formData.age_max}
+                    onChange={handleChange}
+                    className="input input-bordered"
+                    required
+                  />
+
+                  <Select
+                    className="text-primary-content"
+                    options={hobbies.map((h) => ({
+                      value: h.id,
+                      label: h.label,
+                    }))}
+                    value={selectedHobbies}
+                    onChange={handleHobbyChange}
+                    isMulti={true}
+                    placeholder="Wybierz hobby"
+                  />
+
+                  <div className="flex justify-between space-x-2">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={previousStep}
+                    >
+                      Powrót
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={nextStep}
+                    >
+                      Dalej
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {step === 3 && (
+                <>
+                  {/* KROK 3 */}
+                  <PhotoUploader maxFiles={5} value={photos} onChange={setPhotos} />
+
+                  <div className="flex justify-between space-x-2 mt-4">
+                    <button
+                      type="button"
+                      className={`btn btn-secondary ${submitting ? "opacity-65 cursor-not-allowed pointer-events-none" : ""}`}
+                      onClick={previousStep}
+                    >
+                      Powrót
+                    </button>
+                    
+                    <button
+                      type="submit"
+                      className={`btn btn-primary 
+                        ${submitting || success ? "opacity-65 cursor-not-allowed pointer-events-none" : ""}
+                        ${success ? "bg-success border-success hover:bg-success hover:border-success" : ""}
+                      `}
+                    >
+                      {success ? (
+                        <span className="flex items-center gap-2">
+                          <span className="animate-bounce">✅</span>
+                          <span>Zarejestrowano</span>
+                        </span>
+                      ) : submitting ? (
+                        <span className="flex items-center gap-2">
+                          <span className="loading loading-spinner loading-sm"></span>
+                          <span>Rejestracja...</span>
+                        </span>
+                      ) : (
+                        "Zarejestruj się"
+                      )}
+                    </button>
+                  </div>
+                </>
+              )}
+            </form>
+          </div>
+        </div>
+      </main>
 
       <ErrorPopup error={error} showError={showError} setShowError={setShowError}/>
     </div>
