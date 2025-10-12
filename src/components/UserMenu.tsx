@@ -12,7 +12,7 @@ const UserMenu = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("userId");
     localStorage.removeItem("username");
-    navigate("/login");
+    navigate("/");
   };
 
   const menuItems = [
