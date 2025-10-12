@@ -16,7 +16,7 @@ const titleMap: Record<string, string> = {
   '/': 'Witamy! | svelove',
   '/login': 'Logowanie | svelove',
   '/register': 'Rejestracja | svelove',
-  '/dashboard': 'Panel użytkownika | svelove',
+  '/dashboard': 'Strona główna | svelove',
   '/chat': 'Czat | svelove',
   '/profile': "Profil | svelove",
   '/profile/edit': "Edytuj profil | svelove",

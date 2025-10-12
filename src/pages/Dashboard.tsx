@@ -6,6 +6,13 @@ import { apiRequest } from "../api/apiRequest";
 import { DashboardDto } from "../types";
 import imagePlaceholder from "../assets/image-placeholder.svg";
 
+function pluralize(count: number, forms: [string, string, string]) {
+  if (count === 1) return forms[0];
+  if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 10 || count % 100 >= 20)) {
+    return forms[1];
+  }
+  return forms[2];
+}
 
 const Dashboard: React.FC = () => {
   const [data, setData] = useState<DashboardDto | null>(null);
@@ -65,7 +72,7 @@ const Dashboard: React.FC = () => {
       <div className="relative">
         <main className={`mx-auto mt-6 mb-20 max-w-3xl space-y-8 p-6 md:mb-6 ${error ? "blur-sm pointer-events-none" : ""}`}>
           {/* Powitanie */}
-          <section className="rounded-lg bg-neutral p-6 shadow">
+          <section className="rounded-lg bg-neutral p-6 shadow border border-secondary/50">
             <div className="flex items-center space-x-4">
               <img
                 src={profilePictureUrl ?? imagePlaceholder}
@@ -75,15 +82,21 @@ const Dashboard: React.FC = () => {
               <div>
                 <h1 className="text-3xl font-bold text-primary">Cześć, {username}! 👋</h1>
                 <p className="text-base-content/70">
-                  Masz <span className="font-semibold text-secondary">{newMatchesCount} nowe dopasowania</span> i{" "}
-                  <span className="font-semibold text-secondary">{newMessagesCount} nowych wiadomości</span>.
+                  Masz{" "}
+                  <span className="font-semibold text-secondary">
+                    {newMatchesCount} {pluralize(newMatchesCount, ["nowe dopasowanie", "nowe dopasowania", "nowych dopasowań"])}
+                  </span>{" "}
+                  i{" "}
+                  <span className="font-semibold text-secondary">
+                    {newMessagesCount} {pluralize(newMessagesCount, ["nową wiadomość", "nowe wiadomości", "nowych wiadomości"])}
+                  </span>.
                 </p>
               </div>
             </div>
           </section>
 
           {/* Szybkie akcje */}
-          <section className="rounded-lg bg-neutral p-6 shadow">
+          <section className="rounded-lg bg-neutral p-6 shadow border border-secondary/50">
             <h2 className="mb-5 text-2xl font-semibold text-primary">🚀 Szybkie akcje</h2>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               <button className="btn btn-primary" onClick={() => navigate("/matches")}>
@@ -102,7 +115,7 @@ const Dashboard: React.FC = () => {
           </section>
 
           {/* Ostatnie powiadomienia */}
-          <section className="rounded-lg bg-neutral p-6 shadow">
+          <section className="rounded-lg bg-neutral p-6 shadow border border-secondary/50">
             <h2 className="mb-2 text-2xl font-semibold text-primary">⏰ Ostatnie aktywności</h2>
             <ul className="space-y-2">
               {notifications.map((n) => {
@@ -129,7 +142,7 @@ const Dashboard: React.FC = () => {
           </section>
 
           {/* Statystyki miesięczne */}
-          <section className="rounded-lg bg-neutral p-6 shadow">
+          <section className="rounded-lg bg-neutral p-6 shadow border border-secondary/50">
             <h2 className="mb-2 text-2xl font-semibold text-primary">📊 Statystyki aktualnego miesiąca</h2>
             <div className="flex space-x-8 text-base-content justify-between px-6">
               <div className="flex items-center">
@@ -157,7 +170,7 @@ const Dashboard: React.FC = () => {
           </section>
 
           {/* Co nowego? */}
-          <section className="rounded-lg bg-neutral p-6 shadow">
+          <section className="rounded-lg bg-neutral p-6 shadow border border-secondary/50">
             <h2 className="mb-2 text-2xl font-semibold text-primary">✨ Co nowego?</h2>
             <div className="space-y-2 text-base-content">
               <p>
