@@ -164,7 +164,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col text-base-content">
       
       <Header />
 
@@ -181,7 +181,7 @@ const Register = () => {
                         ${step === 3 ? "max-w-full sm:max-w-3xl" : "max-w-md"}
                         border border-secondary text-center flex flex-col space-y-4`}
           >
-            <h3 className="text-3xl font-semibold">
+            <h3 className="text-3xl font-semibold text-neutral-content">
               {step === 1 && "Rejestracja - krok 1"}
               {step === 2 && "Rejestracja - krok 2"}
               {step === 3 && "Rejestracja - zdjęcia"}
@@ -200,7 +200,7 @@ const Register = () => {
                     placeholder="Nazwa użytkownika"
                     value={formData.username}
                     onChange={handleChange}
-                    className="input input-bordered"
+                    className="input input-bordered text-base-content"
                     required
                   />
                   <input
@@ -209,7 +209,7 @@ const Register = () => {
                     placeholder="Login"
                     value={formData.login}
                     onChange={handleChange}
-                    className="input input-bordered"
+                    className="input input-bordered text-base-content"
                     required
                   />
                   <input
@@ -218,14 +218,14 @@ const Register = () => {
                     placeholder="Hasło"
                     value={formData.password}
                     onChange={handleChange}
-                    className="input input-bordered"
+                    className="input input-bordered text-base-content"
                     required
                   />
                   <select
                     name="sex"
                     value={formData.sex}
                     onChange={handleChange}
-                    className="select select-bordered"
+                    className="select select-bordered text-base-content"
                     required
                   >
                     <option value="">Płeć</option>
@@ -239,7 +239,7 @@ const Register = () => {
                     placeholder="Wiek"
                     value={formData.age}
                     onChange={handleChange}
-                    className="input input-bordered"
+                    className="input input-bordered text-base-content"
                     required
                   />
                   <div className="flex justify-between space-x-2">
@@ -268,7 +268,7 @@ const Register = () => {
                     name="cityId"
                     value={formData.cityId}
                     onChange={handleChange}
-                    className="select select-bordered"
+                    className="select select-bordered text-base-content"
                     required
                   >
                     <option value="">Wybierz miasto</option>
@@ -284,7 +284,7 @@ const Register = () => {
                     placeholder="Opis"
                     value={formData.description}
                     onChange={handleChange}
-                    className="textarea textarea-bordered"
+                    className="textarea textarea-bordered text-base-content"
                     maxLength={225}
                     required
                   />
@@ -293,7 +293,7 @@ const Register = () => {
                     name="preference"
                     value={formData.preference}
                     onChange={handleChange}
-                    className="select select-bordered"
+                    className="select select-bordered text-base-content"
                     required
                   >
                     <option value="">Preferencje</option>
@@ -309,7 +309,7 @@ const Register = () => {
                     placeholder="Minimalny wiek partnera"
                     value={formData.age_min}
                     onChange={handleChange}
-                    className="input input-bordered"
+                    className="input input-bordered text-base-content"
                     required
                   />
                   <input
@@ -318,12 +318,12 @@ const Register = () => {
                     placeholder="Maksymalny wiek partnera"
                     value={formData.age_max}
                     onChange={handleChange}
-                    className="input input-bordered"
+                    className="input input-bordered text-base-content"
                     required
                   />
 
                   <Select
-                    className="text-primary-content"
+                    className="text-base-content"
                     options={hobbies.map((h) => ({
                       value: h.id,
                       label: h.label,
@@ -371,7 +371,7 @@ const Register = () => {
                       type="submit"
                       className={`btn btn-primary 
                         ${submitting || success ? "opacity-65 cursor-not-allowed pointer-events-none" : ""}
-                        ${success ? "bg-success border-success hover:bg-success hover:border-success" : ""}
+                        ${success ? "bg-success border-success text-success-content hover:bg-success hover:border-success" : ""}
                       `}
                     >
                       {success ? (

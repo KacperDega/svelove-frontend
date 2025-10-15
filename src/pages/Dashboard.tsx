@@ -72,7 +72,7 @@ const Dashboard: React.FC = () => {
       <div className="relative">
         <main className={`mx-auto mt-6 mb-20 max-w-3xl space-y-8 p-6 md:mb-6 ${error ? "blur-sm pointer-events-none" : ""}`}>
           {/* Powitanie */}
-          <section className="rounded-lg bg-neutral p-6 shadow border border-secondary/50">
+          <section className="rounded-lg bg-neutral p-6 shadow-md shadow-secondary/50 border border-secondary/50">
             <div className="flex items-center space-x-4">
               <img
                 src={profilePictureUrl ?? imagePlaceholder}
@@ -81,7 +81,7 @@ const Dashboard: React.FC = () => {
               />
               <div>
                 <h1 className="text-3xl font-bold text-primary">Cześć, {username}! 👋</h1>
-                <p className="text-base-content/70">
+                <p className="text-neutral-content">
                   Masz{" "}
                   <span className="font-semibold text-secondary">
                     {newMatchesCount} {pluralize(newMatchesCount, ["nowe dopasowanie", "nowe dopasowania", "nowych dopasowań"])}
@@ -96,7 +96,7 @@ const Dashboard: React.FC = () => {
           </section>
 
           {/* Szybkie akcje */}
-          <section className="rounded-lg bg-neutral p-6 shadow border border-secondary/50">
+          <section className="rounded-lg bg-neutral p-6 shadow-md shadow-secondary/50 border border-secondary/50">
             <h2 className="mb-5 text-2xl font-semibold text-primary">🚀 Szybkie akcje</h2>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               <button className="btn btn-primary" onClick={() => navigate("/matches")}>
@@ -115,9 +115,9 @@ const Dashboard: React.FC = () => {
           </section>
 
           {/* Ostatnie powiadomienia */}
-          <section className="rounded-lg bg-neutral p-6 shadow border border-secondary/50">
+          <section className="rounded-lg bg-neutral p-6 shadow-md shadow-secondary/50 border border-secondary/50">
             <h2 className="mb-2 text-2xl font-semibold text-primary">⏰ Ostatnie aktywności</h2>
-            <ul className="space-y-2">
+            <ul className="space-y-2 text-neutral-content">
               {notifications.map((n) => {
                 let emoji = "";
                 if (n.type === "NEW_MATCH") {
@@ -134,7 +134,7 @@ const Dashboard: React.FC = () => {
 
                 return (
                   <li key={n.id}>
-                    {emoji} {messageWithoutUsername} <strong>{username}</strong>
+                    <span className="opacity-80">{emoji} {messageWithoutUsername}</span> <strong className="text-secondary">{username}</strong>
                   </li>
                 );
               })}
@@ -142,46 +142,46 @@ const Dashboard: React.FC = () => {
           </section>
 
           {/* Statystyki miesięczne */}
-          <section className="rounded-lg bg-neutral p-6 shadow border border-secondary/50">
+          <section className="rounded-lg bg-neutral p-6 shadow-md shadow-secondary/50 border border-secondary/50">
             <h2 className="mb-2 text-2xl font-semibold text-primary">📊 Statystyki aktualnego miesiąca</h2>
-            <div className="flex space-x-8 text-base-content justify-between px-6">
+            <div className="flex space-x-8 text-neutral-content justify-between px-6">
               <div className="flex items-center">
                 <span className="text-3xl mr-2">⬅️</span>
                 <div>
                   <p className="font-semibold">Swipe w lewo:</p>
-                  <p className="text-center">{currentMonthStats.leftSwipes}</p>
+                  <p className="text-center text-lg font-bold text-error">{currentMonthStats.leftSwipes}</p>
                 </div>
               </div>
               <div className="flex items-center">
                 <span className="text-3xl mr-2">➡️</span>
                 <div>
                   <p className="font-semibold">Swipe w prawo:</p>
-                  <p className="text-center">{currentMonthStats.rightSwipes}</p>
+                  <p className="text-center text-lg font-bold text-success">{currentMonthStats.rightSwipes}</p>
                 </div>
               </div>
               <div className="flex items-center">
                 <span className="text-3xl mr-2">❤️</span>
                 <div>
                   <p className="font-semibold">Matchy:</p>
-                  <p className="text-center">{currentMonthStats.matches}</p>
+                  <p className="text-center text-lg font-bold text-primary">{currentMonthStats.matches}</p>
                 </div>
               </div>
             </div>
           </section>
 
           {/* Co nowego? */}
-          <section className="rounded-lg bg-neutral p-6 shadow border border-secondary/50">
+          <section className="rounded-lg bg-neutral p-6 shadow-md shadow-secondary/50 border border-secondary/50">
             <h2 className="mb-2 text-2xl font-semibold text-primary">✨ Co nowego?</h2>
-            <div className="space-y-2 text-base-content">
+            <div className="space-y-2 text-neutral-content">
               <p>
-                🆕 <strong>Nowość:</strong> Zobacz swoje statystyki dopasowań w sekcji&nbsp;
-                <strong onClick={() => navigate("/profile/stats")} className="cursor-pointer hover:underline">
+                🆕 <strong className="text-info">Nowość:</strong> Zobacz swoje statystyki dopasowań w sekcji&nbsp;
+                <strong onClick={() => navigate("/profile/stats")} className="cursor-pointer hover:underline text-info">
                   📊 Statystyki
                 </strong>
                 !
               </p>
               <p>
-                💡 <strong>Tip:</strong> Dodaj uśmiechnięte zdjęcie - zwiększasz szansę na match! 😊
+                💡 <strong className="text-warning">Tip:</strong> Dodaj uśmiechnięte zdjęcie - zwiększasz szansę na match! 😊
               </p>
             </div>
           </section>

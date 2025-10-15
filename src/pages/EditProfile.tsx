@@ -86,17 +86,17 @@ useEffect(() => {
 
   if (loading)
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen text-base-content">
         <Navbar />
         
         <div className="flex justify-center items-center flex-grow">
-          <span className="loading loading-spinner loading-lg"></span>
+          <span className="loading loading-spinner loading-lg text-primary"></span>
         </div>
       </div>
     );
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col text-base-content">
       <Navbar />
 
       <div className="max-w-5xl mx-auto p-6 space-y-6">
@@ -142,9 +142,9 @@ useEffect(() => {
           {/* edycja */}
           <form
             onSubmit={handleSubmit}
-            className="card bg-neutral shadow-xl border border-secondary p-6 space-y-4"
+            className="card bg-neutral text-neutral-content shadow-xl border border-secondary p-6 space-y-4"
           >
-            <h2 className="text-3xl font-bold mb-4">Edytuj profil</h2>
+            <h2 className="text-3xl font-bold mb-4 text-primary">Edytuj profil</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
@@ -154,7 +154,7 @@ useEffect(() => {
                   value={formData.username}
                   onChange={handleChange}
                   placeholder="Nazwa użytkownika"
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full text-base-content"
                   required
                 />
               </div>
@@ -197,7 +197,7 @@ useEffect(() => {
                   value={formData.age}
                   onChange={handleChange}
                   placeholder="Wiek"
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full text-base-content"
                   required
                 />
               </div>
@@ -208,7 +208,7 @@ useEffect(() => {
                   name="preference"
                   value={formData.preference}
                   onChange={handleChange}
-                  className="select select-bordered w-full"
+                  className="select select-bordered w-full text-base-content"
                   required
                 >
                   <option value="">Preferencje</option>
@@ -225,7 +225,7 @@ useEffect(() => {
                     name="cityId"
                     value={cities.find(city => city.name === formData.city)?.id ?? ""}
                     onChange={handleCityChange}
-                    className="select select-bordered w-full"
+                    className="select select-bordered w-full text-base-content"
                     required
                   >
                     <option value="">Wybierz miasto</option>
@@ -249,7 +249,7 @@ useEffect(() => {
                   value={formData.age_min}
                   onChange={handleChange}
                   placeholder="Minimalny wiek partnera"
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full text-base-content"
                   required
                 />
               </div>
@@ -266,7 +266,7 @@ useEffect(() => {
                   value={formData.age_max}
                   onChange={handleChange}
                   placeholder="Maksymalny wiek partnera"
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full text-base-content"
                   required
                 />
               </div>
@@ -278,7 +278,7 @@ useEffect(() => {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                className="textarea textarea-bordered w-full" 
+                className="textarea textarea-bordered w-full text-base-content" 
                 rows={4}
                 required
               />
@@ -293,7 +293,7 @@ useEffect(() => {
                   .filter((h) => formData.hobbies.includes(h.label))
                   .map((h) => ({ value: h.id, label: h.label }))}
                 onChange={handleHobbiesChange}
-                className="react-select-container text-black"
+                className="react-select-container text-base-content"
                 classNamePrefix="react-select"
               />
             </div>

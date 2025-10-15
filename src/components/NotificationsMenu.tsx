@@ -65,7 +65,7 @@ const NotificationsMenu = () => {
         className="relative btn btn-ghost btn-circle"
         onClick={() => setOpen((prev) => !prev)}
       >
-        <BellIcon className={`h-6 w-6 ${error ? "text-error" : "text-base-content"}`} />
+        <BellIcon className={`h-6 w-6 ${error ? "text-error" : "text-neutral-content"}`} />
         <span className="absolute -top-1 -right-1 badge badge-primary text-xs">
           {error ? "!" : unreadCount}
         </span>
@@ -85,7 +85,7 @@ const NotificationsMenu = () => {
             }
   
             {notifications.length === 0 ? (
-              <p className="text-sm text-base-content/70 text-center p-4">
+              <p className="text-sm text-neutral-content/70 text-center p-4">
                 Brak powiadomień
               </p>
             ) : (
@@ -104,9 +104,9 @@ const NotificationsMenu = () => {
                   ) : (
                     <ConversationIcon className="h-5 w-5 text-blue-500" />
                   )}
-                  <div className="flex flex-col">
+                  <div className="flex flex-col text-base-content">
                     <span>{notif.message}</span>
-                    <span className="text-xs text-base-content/50">
+                    <span className="text-xs text-base-content/70">
                       {new Date(notif.createdAt).toLocaleString()}
                     </span>
                   </div>

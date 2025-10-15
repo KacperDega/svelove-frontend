@@ -154,7 +154,7 @@ const ChatPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen text-base-content">
       <Navbar />
 
       <div className="flex flex-1 overflow-hidden">
@@ -162,7 +162,7 @@ const ChatPage: React.FC = () => {
         {/* lista konwersacji */}
         <div className="hidden md:flex flex-col w-1/5 border-r border-secondary overflow-y-auto">
           {loadingConversations ? (
-            <div className="p-4 text-gray-400 flex items-center justify-center flex-1">Ładowanie...</div>
+            <div className="p-4 text-base-content/70 flex items-center justify-center flex-1">Ładowanie...</div>
           ) : (
             conversations.map((conv) => (
               <button
@@ -188,7 +188,7 @@ const ChatPage: React.FC = () => {
                     {conv.otherUserName}
                   </p>
                   <p
-                    className={`text-sm text-gray-300 truncate ${
+                    className={`text-sm text-base-content/70 truncate ${
                       activeConversation?.matchId === conv.matchId ? "font-semibold" : ""
                     }`}
                   >
@@ -206,7 +206,7 @@ const ChatPage: React.FC = () => {
             <>
               <div className="flex-1 overflow-y-auto p-4 flex flex-col-reverse gap-3">
                 {loadingMessages ? (
-                  <div className="text-gray-400">Ładowanie wiadomości...</div>
+                  <div className="text-base-content/70">Ładowanie wiadomości...</div>
                 ) : (
                   messages.map((msg) => {
                     const isMe = msg.writtenBy === currentUserId;
@@ -250,7 +250,7 @@ const ChatPage: React.FC = () => {
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Napisz wiadomość..."
-                  className="input input-bordered flex-1"
+                  className="input input-bordered flex-1 text-base-content"
                   onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 />
                 <button className="btn btn-primary" onClick={sendMessage}>
@@ -261,7 +261,7 @@ const ChatPage: React.FC = () => {
           ) : (
             <div
               className={`flex items-center justify-center flex-1 ${
-                error ? "text-lg text-base-content" : "text-gray-500"
+                error ? "text-lg text-base-content" : "text-base-content/70"
               }`}
             >
               {error ? (

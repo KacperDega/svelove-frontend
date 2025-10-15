@@ -99,7 +99,7 @@ const UserStats: React.FC = () => {
 
   if (!stats) {
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen text-base-content">
         <Navbar />
         <div className="flex-grow flex items-center justify-center">
           {error ? (
@@ -112,7 +112,7 @@ const UserStats: React.FC = () => {
               </p>
             </div>
           ) : (
-            <span className="loading loading-spinner loading-lg"></span>
+            <span className="loading loading-spinner loading-lg text-primary"></span>
           )}
         </div>
         
@@ -148,14 +148,14 @@ const UserStats: React.FC = () => {
 
   
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen text-base-content">
       <Navbar />
       <div className="flex-grow bg-base-100 p-6">
         <div className="max-w-4xl mx-auto">
           <div className="mb-6 text-center">
 
             {mode === "month" && (
-              <h1 className="text-3xl font-extrabold text-content drop-shadow-lg inline-flex items-center justify-center select-none">
+              <h1 className="text-3xl font-extrabold text-primary drop-shadow-lg inline-flex items-center justify-center select-none">
                 Twoje cyfrowe podboje z miesiąca&nbsp;
                 <span
                   onClick={openDatePicker}
@@ -168,12 +168,12 @@ const UserStats: React.FC = () => {
             )}
 
             {mode === "year" && (
-              <h1 className="text-3xl font-extrabold text-content drop-shadow-lg inline-flex items-center justify-center select-none">
+              <h1 className="text-3xl font-extrabold text-primary drop-shadow-lg inline-flex items-center justify-center select-none">
                 Twoje cyfrowe podboje w roku&nbsp;
                 <select
                   value={selectedYear ?? ""}
                   onChange={(e) => setSelectedYear(Number(e.target.value))}
-                  className="ml-2 select select-sm select-bordered"
+                  className="ml-2 select select-sm select-bordered text-base-content"
                 >
                   {Array.from(new Set(availablePeriods.map((p) => p.year)))
                     .sort()
@@ -187,7 +187,7 @@ const UserStats: React.FC = () => {
             )}
 
             {mode === "lifetime" && (
-              <h1 className="text-3xl font-extrabold text-content drop-shadow-lg text-center select-none">
+              <h1 className="text-3xl font-extrabold text-primary drop-shadow-lg text-center select-none">
                 Twoje cyfrowe podboje w całym okresie
               </h1>
             )}
@@ -231,66 +231,66 @@ const UserStats: React.FC = () => {
             </p>
           </div>
 
-          <div className="card bg-neutral shadow-xl border border-secondary">
+          <div className="card bg-neutral text-neutral-content shadow-xl border border-secondary">
             <div className="card-body space-y-8">
               {/* SWIPES */}
               <section>
                 <div className="text-center mb-4">
-                  <div className="stat bg-base-200 rounded-lg inline-block p-6 shadow-md shadow-base-100">
-                    <div className="stat-title">Łącznie swipe'ów</div>
+                  <div className="stat bg-base-200 text-base-content rounded-lg inline-block p-6 shadow-md shadow-base-100">
+                    <div className="stat-title text-base-content/70">Łącznie swipe'ów</div>
                     <div className="stat-value text-info">{stats.totalSwipes}</div>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center">
-                  <div className="stat bg-base-200 rounded-lg p-4 text-center shadow-md shadow-base-100">
+                  <div className="stat bg-base-200 text-base-content rounded-lg p-4 text-center shadow-md shadow-base-100">
                     <div className="stat-figure text-secondary mx-auto">
                       <FaArrowLeft />
                     </div>
-                    <div className="stat-title">W lewo</div>
+                    <div className="stat-title text-base-content/70">W lewo</div>
                     <div className="stat-value text-secondary">{stats.leftSwipes}</div>
-                    <div className="stat-desc">{swipeLeftPercent}%</div>
+                    <div className="stat-desc text-base-content/70">{swipeLeftPercent}%</div>
                   </div>
 
-                  <div className="stat bg-base-200 rounded-lg p-4 text-center shadow-md shadow-base-100">
+                  <div className="stat bg-base-200 text-base-content rounded-lg p-4 text-center shadow-md shadow-base-100">
                     <div className="stat-figure text-accent mx-auto">
                       <FaArrowRight />
                     </div>
-                    <div className="stat-title">W prawo</div>
+                    <div className="stat-title text-base-content/70">W prawo</div>
                     <div className="stat-value text-accent">{stats.rightSwipes}</div>
-                    <div className="stat-desc">{swipeRightPercent}%</div>
+                    <div className="stat-desc text-base-content/70">{swipeRightPercent}%</div>
                   </div>
                 </div>
               </section>
 
-              <div className="divider">Dopasowania</div>
+              <div className="divider text-neutral-content">Dopasowania</div>
 
               {/* MATCHES */}
               <section>
-                <div className="text-center mb-4">
-                  <div className="stat bg-base-200 rounded-lg p-4 text-center shadow-md shadow-base-100">
-                    <div className="stat-title">Dopasowania</div>
+                <div className="text-center mb-4 ">
+                  <div className="stat bg-base-200 text-base-content rounded-lg p-4 text-center shadow-md shadow-base-100">
+                    <div className="stat-title text-base-content/70">Dopasowania</div>
                     <div className="stat-value text-primary">{stats.matches}</div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center">
-                  <div className="stat bg-base-200 rounded-lg p-4 text-center shadow-md shadow-base-100">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center ">
+                  <div className="stat bg-base-200 text-base-content rounded-lg p-4 text-center shadow-md shadow-base-100">
                     <div className="stat-figure text-success mx-auto">
                       <FaCommentDots />
                     </div>
-                    <div className="stat-title">Z rozmową</div>
+                    <div className="stat-title text-base-content/70">Z rozmową</div>
                     <div className="stat-value text-success">{stats.matchesWithConversation}</div>
-                    <div className="stat-desc">{matchWithConvPercent}%</div>
+                    <div className="stat-desc text-base-content/70">{matchWithConvPercent}%</div>
                   </div>
 
-                  <div className="stat bg-base-200 rounded-lg p-4 text-center shadow-md shadow-base-100">
+                  <div className="stat bg-base-200 text-base-content rounded-lg p-4 text-center shadow-md shadow-base-100">
                     <div className="stat-figure text-error mx-auto">
                       <FaCommentSlash />
                     </div>
-                    <div className="stat-title">Bez wiadomości</div>
+                    <div className="stat-title text-base-content/70">Bez wiadomości</div>
                     <div className="stat-value text-error">{stats.matchesWithoutMessages}</div>
-                    <div className="stat-desc">{matchWithoutConvPercent}%</div>
+                    <div className="stat-desc text-base-content/70">{matchWithoutConvPercent}%</div>
                   </div>
                 </div>
               </section>
@@ -301,7 +301,7 @@ const UserStats: React.FC = () => {
                   <select
                     value={mode}
                     onChange={(e) => setMode(e.target.value as StatsMode)}
-                    className="select select-bordered select-sm"
+                    className="select select-bordered select-sm text-base-content"
                   >
                     <option value="month">Miesiąc</option>
                     <option value="year">Rok</option>
@@ -309,7 +309,7 @@ const UserStats: React.FC = () => {
                   </select>
                 </label>
 
-                <div className="text-base-content/60 italic">
+                <div className="text-neutral-content/60 italic">
                   ⏰ Ostatnia aktualizacja:{" "}
                   <span className="font-mono">{updatedDate}</span>
                 </div>

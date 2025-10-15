@@ -63,11 +63,11 @@ const EditPhotos = () => {
 
   if (loading)
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen text-base-content">
         <Navbar />
         
         <div className="flex justify-center items-center flex-grow">
-          <span className="loading loading-spinner loading-lg"></span>
+          <span className="loading loading-spinner loading-lg text-primary"></span>
         </div>
       </div>
     );
@@ -75,10 +75,10 @@ const EditPhotos = () => {
   const displayPhotos = photos.length > 0 ? photos : emptyProfile.photoUrls;
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className="min-h-screen bg-base-100 text-base-content">
       <Navbar />
       <div className="max-w-4xl mx-auto p-6">
-        <div className="card bg-neutral shadow-xl mt-6 p-6 space-y-6">
+        <div className="card bg-neutral text-neutral-content shadow-xl mt-6 p-6 space-y-6">
           <h1 className="text-2xl font-bold text-center text-primary">Edytuj zdjęcia</h1>
 
           <div className="carousel w-full rounded-lg overflow-hidden shadow-lg">

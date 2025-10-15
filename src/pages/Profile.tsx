@@ -31,11 +31,11 @@ const Profile: React.FC = () => {
 
   if (loading)
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-base-100">
         <Navbar />
         
         <div className="flex justify-center items-center flex-grow">
-          <span className="loading loading-spinner loading-lg"></span>
+          <span className="loading loading-spinner loading-lg text-primary"></span>
         </div>
       </div>
     );
@@ -43,7 +43,7 @@ const Profile: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <div className="max-w-5xl mx-auto p-6 space-y-6">
+      <div className="max-w-5xl mx-auto p-6 space-y-6 w-full">
         <div className="grid grid-cols-1 md:grid-cols-[6fr_4fr] gap-6">
           
           {/* zdjecia */}
@@ -76,9 +76,9 @@ const Profile: React.FC = () => {
           {/* dane */}
           <div className="card bg-neutral shadow-xl border border-secondary h-full flex flex-col justify-between">
             <div className="card-body flex flex-col h-full gap-4">
-              <h2 className="card-title text-3xl font-bold">{user.username}</h2>
+              <h2 className="card-title text-3xl font-bold text-primary">{user.username}</h2>
 
-              <div className="text-base-content space-y-2">
+              <div className="text-neutral-content space-y-2">
                 <p><span className="font-semibold">Login:</span> {user.login}</p>
                 <p><span className="font-semibold">Płeć:</span> {user.sex}</p>
                 <p><span className="font-semibold">Wiek:</span> {user.age}</p>
@@ -89,7 +89,7 @@ const Profile: React.FC = () => {
               </div>
 
               <div>
-                <p className="font-semibold">Zainteresowania:</p>
+                <p className="font-semibold text-neutral-content">Zainteresowania:</p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {user.hobbies.map((hobby) => (
                     <span key={hobby} className="badge badge-primary badge-outline">

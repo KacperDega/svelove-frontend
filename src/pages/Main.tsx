@@ -34,14 +34,14 @@ const Main = () => {
     <div className="min-h-screen font-sans">
       <Header />
 
-      <main className="hero min-h-[calc(100vh-64px)] bg-base-100 border-b border-secondary">
+      <main className="hero min-h-[calc(100vh-64px)] bg-base-100 border-b-2 border-secondary">
         <div className="hero-content text-center">
           <div className="max-w-2xl flex flex-col items-center">
             <p className="text-9xl pb-4 font-teaspoon text-primary select-none mb-4">svelove</p>
             <h1 className="text-4xl md:text-5xl pb-3 font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
               Odkryj nowe znajomości.
             </h1>
-            <p className="py-6 text-lg text-base-content/80">
+            <p className="py-6 text-lg text-base-content">
               Dołącz do svelove, nowoczesnej platformy randkowej, która pomoże Ci znaleźć idealnego partnera. Prosto, szybko i przyjemnie.
             </p>
 

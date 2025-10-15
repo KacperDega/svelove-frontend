@@ -54,7 +54,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col text-neutral-content">
 
       <Header />
       
@@ -67,10 +67,10 @@ const Login = () => {
 
         <div className="flex justify-center">
             <div className="bg-neutral shadow-md rounded-xl p-6 w-full max-w-md border border-secondary text-center flex flex-col space-y-4">
-            <h3 className="text-3xl font-semibold">Logowanie</h3>
+            <h3 className="text-3xl font-semibold text-neutral-content">Logowanie</h3>
             <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
               <div>
-                <label htmlFor="login" className="mr-6">
+                <label htmlFor="login" className="mr-6 text-neutral-content">
                   Login
                 </label>
                 <input
@@ -78,12 +78,12 @@ const Login = () => {
                   id="login"
                   value={loginValue}
                   onChange={(e) => setLoginValue(e.target.value)}
-                  className="input input-bordered"
+                  className="input input-bordered text-base-content"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="password" className="mr-6">
+                <label htmlFor="password" className="mr-6 text-neutral-content">
                   Hasło
                 </label>
                 <input
@@ -91,7 +91,7 @@ const Login = () => {
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="input input-bordered"
+                  className="input input-bordered text-base-content"
                   required
                 />
               </div>
@@ -108,7 +108,7 @@ const Login = () => {
                   type="submit"
                   className={`btn btn-primary 
                     ${submitting || success ? "opacity-65 cursor-not-allowed pointer-events-none" : ""}
-                    ${success ? "bg-success border-success hover:bg-success hover:border-success" : ""}
+                    ${success ? "bg-success border-success text-success-content hover:bg-success hover:border-success" : ""}
                   `}
                 >
                   {success ? (

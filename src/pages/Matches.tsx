@@ -59,6 +59,7 @@ const Matches = () => {
   const fetchMatches = async () => {
     try {
       const data = await apiRequest<MatchProfile[]>("/matches/potential");
+      // console.log(data);
       setMatches((prev) => [...prev, ...data]);
     } catch (e) {
       setError("Błąd ładowania dopasowań.");
@@ -129,11 +130,11 @@ const Matches = () => {
 
   if (loading)
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen text-base-content">
         <Navbar />
         
         <div className="flex justify-center items-center flex-grow">
-          <span className="loading loading-spinner loading-lg"></span>
+          <span className="loading loading-spinner loading-lg text-primary"></span>
         </div>
       </div>
     );
@@ -141,12 +142,12 @@ const Matches = () => {
   const current = matches[0];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen text-base-content">
       <Navbar />
       <div className="flex flex-1 items-center justify-center bg-base-100 px-4 py-8">
         {current ? (
           <div
-            className={`card w-full max-w-2xl bg-neutral shadow-2xl border border-secondary transition-transform duration-500 ${
+            className={`card w-full max-w-2xl bg-neutral text-neutral-content shadow-2xl border border-secondary transition-transform duration-500 ${
               swipeDirection === "left"
                 ? "animate-swipe-left"
                 : swipeDirection === "right"
@@ -190,19 +191,19 @@ const Matches = () => {
             <div className="card-body">
               <h2 className="card-title text-3xl text-primary flex items-end gap-2">
                 {current.username}, {current.age}
-                <span className="text-primary text-lg">
+                <span className="text-neutral-content/80 text-lg">
                   ({translateSex(current.sex)} → {translatePreference(current.preference)})
                 </span>
               </h2>
 
-              <p className="text-lg">
+              <p className="text-lg text-neutral-content">
                 <strong className="text-primary">Miasto:</strong> {current.localization}
               </p>
-              <p className="text-lg">
+              <p className="text-lg text-neutral-content">
                 <strong className="text-primary">Zainteresowania:</strong>{" "}
                 {current.hobbies.join(", ")}
               </p>
-              <p className="text-lg font-medium italic mt-2 text-secondary">
+              <p className="text-lg font-medium italic mt-2 text-neutral-content/90">
                 {current.description}
               </p>
 
@@ -228,7 +229,7 @@ const Matches = () => {
           <div className="flex flex-col items-center justify-center text-center px-4">
             <div className="text-6xl mb-4">😔</div>
             <h2 className="text-2xl font-semibold text-primary mb-2">Brak nowych dopasowań</h2>
-            <p className="text-lg text-base-content">
+            <p className="text-lg text-base-content/80">
               Wygląda na to, że nie ma więcej osób do wyświetlenia.<br />
               Spróbuj ponownie za jakiś czas lub zaktualizuj swoje preferencje!
             </p>

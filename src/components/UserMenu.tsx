@@ -54,7 +54,7 @@ const UserMenu = () => {
               <button
                 key={index}
                 onClick={item.onClick}
-                className="w-full text-left px-3 py-2 rounded-lg hover:bg-base-300"
+                className="w-full text-left px-3 py-2 rounded-lg text-neutral-content hover:bg-base-300 hover:text-base-content"
               >
                 {item.label}
               </button>
