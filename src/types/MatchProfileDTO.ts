@@ -5,7 +5,7 @@ export interface MatchProfile {
   username: string;
   sex: Sex;
   age: number;
-  localization: string;
+  city: string;
   preference: Preference;
   hobbies: string[];
   description: string;

@@ -197,7 +197,7 @@ const Matches = () => {
               </h2>
 
               <p className="text-lg text-neutral-content">
-                <strong className="text-primary">Miasto:</strong> {current.localization}
+                <strong className="text-primary">Miasto:</strong> {current.city}
               </p>
               <p className="text-lg text-neutral-content">
                 <strong className="text-primary">Zainteresowania:</strong>{" "}
