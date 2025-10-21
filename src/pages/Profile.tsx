@@ -5,6 +5,20 @@ import { UserProfileDTO, emptyProfile } from "../types/UserProfileDTO";
 import Navbar from "../components/Navbar";
 import "../index.css";
 import ErrorPopup from "../components/ErrorPopup";
+import { Preference } from "../types/enums";
+
+const translatePreference = (preference: string) => {
+  switch (preference) {
+    case Preference.Men:
+      return "Mężczyźni";
+    case Preference.Women:
+      return "Kobiety";
+    case Preference.Both:
+      return "Obie";
+    default:
+      return "Inne";
+  }
+};
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<UserProfileDTO>(emptyProfile);
@@ -79,17 +93,17 @@ const Profile: React.FC = () => {
               <h2 className="card-title text-3xl font-bold text-primary">{user.username}</h2>
 
               <div className="text-neutral-content space-y-2">
-                <p><span className="font-semibold">Login:</span> {user.login}</p>
-                <p><span className="font-semibold">Płeć:</span> {user.sex}</p>
-                <p><span className="font-semibold">Wiek:</span> {user.age}</p>
-                <p><span className="font-semibold">Preferencje:</span> {user.preference}</p>
-                <p><span className="font-semibold">Zakres wieku:</span> {user.age_min} - {user.age_max}</p>
-                <p><span className="font-semibold">Lokalizacja:</span> {user.city}</p>
-                <p><span className="font-semibold">Opis:</span> {user.description}</p>
+                <p><span className="font-semibold text-secondary">Login:</span> {user.login}</p>
+                <p><span className="font-semibold text-secondary">Płeć:</span> {user.sex}</p>
+                <p><span className="font-semibold text-secondary">Wiek:</span> {user.age}</p>
+                <p><span className="font-semibold text-secondary">Preferencje:</span> {translatePreference(user.preference)}</p>
+                <p><span className="font-semibold text-secondary">Zakres wieku:</span> {user.age_min} - {user.age_max}</p>
+                <p><span className="font-semibold text-secondary">Lokalizacja:</span> {user.city}</p>
+                <p><span className="font-semibold text-secondary">Opis:</span> {user.description}</p>
               </div>
 
               <div>
-                <p className="font-semibold text-neutral-content">Zainteresowania:</p>
+                <p className="font-semibold text-secondary">Zainteresowania:</p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {user.hobbies.map((hobby) => (
                     <span key={hobby} className="badge badge-primary badge-outline">
