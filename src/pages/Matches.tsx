@@ -147,7 +147,7 @@ const Matches = () => {
       <div className="flex flex-1 items-center justify-center bg-base-100 px-4 py-8">
         {current ? (
           <div
-            className={`card w-full max-w-2xl bg-neutral text-neutral-content shadow-2xl border border-secondary transition-transform duration-500 ${
+            className={`card w-full max-w-4xl flex-row bg-neutral text-neutral-content shadow-2xl border border-secondary transition-transform duration-500 ${
               swipeDirection === "left"
                 ? "animate-swipe-left"
                 : swipeDirection === "right"
@@ -160,7 +160,7 @@ const Matches = () => {
               setIsSwiping(false);
             }}
           >
-            <div className="relative h-[550px] w-full overflow-hidden rounded-t-2xl">
+            <div className="relative h-[750px] w-3/5 overflow-hidden rounded-l-2xl rounded-tr-none">
               <div
                 className="flex h-full transition-transform duration-300 ease-in-out"
                 style={{ transform: `translateX(-${activePhotoIndex * 100}%)` }}
@@ -188,37 +188,48 @@ const Matches = () => {
                 </div>
               )}
             </div>
-            <div className="card-body">
-              <h2 className="card-title text-3xl text-primary flex items-end gap-2">
-                {current.username}, {current.age}
-                <span className="text-neutral-content/80 text-lg">
-                  ({translateSex(current.sex)} → {translatePreference(current.preference)})
-                </span>
-              </h2>
+            <div className="card-body w-2/5 flex flex-col justify-between">
+              <div>
+                <h2 className="card-title text-4xl text-accent">
+                  {current.username}, {current.age}
+                </h2>
+                <p className="text-neutral-content/80 text-md mt-1">
+                  {translateSex(current.sex)} → {translatePreference(current.preference)}
+                </p>
+              </div>
 
-              <p className="text-lg text-neutral-content">
-                <strong className="text-primary">Miasto:</strong> {current.city}
-              </p>
-              <p className="text-lg text-neutral-content">
-                <strong className="text-primary">Zainteresowania:</strong>{" "}
-                {current.hobbies.join(", ")}
-              </p>
-              <p className="text-lg font-medium italic mt-2 text-neutral-content/90">
-                {current.description}
-              </p>
+              <div className="flex-grow overflow-y-auto pr-2 my-4">
+                <div className="mb-4">
+                  <strong className="text-primary">Miasto:</strong> {current.city}
+                </div>
+                <div className="mb-4">
+                  <strong className="text-primary">Zainteresowania:</strong>
+                  <div className="flex flex-wrap items-center gap-2 mt-1">
+                    {current.hobbies.map((hobby, index) => (
+                      <span key={index} className="badge badge-outline badge-secondary">
+                        {hobby}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <strong className="text-primary">Opis:</strong>
+                  <span className="block italic text-neutral-content/90">{current.description}</span>
+                </div>
+              </div>
 
-              <div className="card-actions justify-between mt-6 mx-4">
+              <div className="card-actions justify-between mt-4">
                 <button
                   onClick={handleSkip}
                   disabled={likeLoading}
-                  className={`btn btn-outline btn-secondary btn-wide text-lg ${likeLoading ? "opacity-50 pointer-events-none" : ""}`}
+                  className={`btn btn-outline btn-secondary px-6 text-lg ${likeLoading ? "opacity-50 pointer-events-none" : ""}`}
                 >
                   Pomiń ▷▷
                 </button>
                 <button
                   onClick={handleLike}
                   disabled={likeLoading}
-                  className={`btn btn-primary btn-wide text-lg ${likeLoading ? "opacity-50 pointer-events-none" : ""}`}
+                  className={`btn btn-primary px-6 text-lg ${likeLoading ? "opacity-50 pointer-events-none" : ""}`}
                 >
                   Polub ✓
                 </button>
