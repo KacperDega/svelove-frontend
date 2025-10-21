@@ -237,6 +237,8 @@ const Register = () => {
                     type="number"
                     name="age"
                     placeholder="Wiek"
+                    min={18}
+                    max={100}
                     value={formData.age}
                     onChange={handleChange}
                     className="input input-bordered text-base-content"
@@ -323,7 +325,7 @@ const Register = () => {
                   />
 
                   <Select
-                    className="text-base-content"
+                    className="text-primary-content"
                     options={hobbies.map((h) => ({
                       value: h.id,
                       label: h.label,
