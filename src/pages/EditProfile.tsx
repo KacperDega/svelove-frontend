@@ -72,13 +72,14 @@ useEffect(() => {
     e.preventDefault();
     try {
       const updateDto = mapToUpdateDto(formData, hobbies, cities);
+      console.log(updateDto);
       await apiRequest("/profile/edit", {
         method: "POST",
         body: JSON.stringify(updateDto),
       });
       navigate("/profile");
     } catch (err) {
-      console.error("City not found"); 
+      console.error(err); 
       setError("Błąd zapisu zmian.");
     }
   };
@@ -212,10 +213,10 @@ useEffect(() => {
                   required
                 >
                   <option value="">Preferencje</option>
-                  <option value="Men">Mężczyźni</option>
-                  <option value="Women">Kobiety</option>
-                  <option value="Both">Oboje</option>
-                  <option value="Other">Inne</option>
+                  <option value="MEN">Mężczyźni</option>
+                  <option value="WOMEN">Kobiety</option>
+                  <option value="BOTH">Oboje</option>
+                  <option value="OTHER">Inne</option>
                 </select>
               </div>
 
@@ -280,6 +281,7 @@ useEffect(() => {
                 onChange={handleChange}
                 className="textarea textarea-bordered w-full text-base-content" 
                 rows={4}
+                maxLength={255}
                 required
               />
             </div>
@@ -293,7 +295,7 @@ useEffect(() => {
                   .filter((h) => formData.hobbies.includes(h.label))
                   .map((h) => ({ value: h.id, label: h.label }))}
                 onChange={handleHobbiesChange}
-                className="react-select-container text-base-content"
+                className="react-select-container text-primary-content"
                 classNamePrefix="react-select"
               />
             </div>
