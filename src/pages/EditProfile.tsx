@@ -72,9 +72,10 @@ useEffect(() => {
     e.preventDefault();
     try {
       const updateDto = mapToUpdateDto(formData, hobbies, cities);
+      updateDto.preference = formData.preference.toUpperCase();
       console.log(updateDto);
       await apiRequest("/profile/edit", {
-        method: "POST",
+        method: "PATCH",
         body: JSON.stringify(updateDto),
       });
       navigate("/profile");
@@ -213,10 +214,10 @@ useEffect(() => {
                   required
                 >
                   <option value="">Preferencje</option>
-                  <option value="MEN">Mężczyźni</option>
-                  <option value="WOMEN">Kobiety</option>
-                  <option value="BOTH">Oboje</option>
-                  <option value="OTHER">Inne</option>
+                  <option value="Men">Mężczyźni</option>
+                  <option value="Women">Kobiety</option>
+                  <option value="Both">Oboje</option>
+                  <option value="Other">Inne</option>
                 </select>
               </div>
 
