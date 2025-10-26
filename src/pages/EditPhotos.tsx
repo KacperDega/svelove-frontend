@@ -51,7 +51,8 @@ const EditPhotos = () => {
       });
 
       setPhotos(finalUrls);
-      navigate("/profile/edit/photos");
+      localStorage.setItem("profilePhotoUrl", finalUrls[0]);
+      navigate("/profile/edit");
     } catch (err) {
       console.error(err);
       setError("Błąd podczas zapisywania zdjęć. Spróbuj ponownie.");
