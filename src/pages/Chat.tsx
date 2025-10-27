@@ -96,7 +96,8 @@ const ChatPage: React.FC = () => {
 
     try {
       const data = await apiRequest<MessageResponseDto[]>(`/chat/${conv.matchId}`);
-      setMessages(data);
+      const sortedData = data.sort((a, b) => Number(b.timestamp) - Number(a.timestamp));
+      setMessages(sortedData);
       // console.log("Fetched messages:", data);
 
       if (clientRef.current) {
@@ -117,7 +118,7 @@ const ChatPage: React.FC = () => {
 
         client.subscribe(`/topic/messages/${conv.matchId}`, (message) => {
           const body: MessageResponseDto = JSON.parse(message.body);
-          setMessages((prev) => [...prev, body]);
+          setMessages((prev) => [body, ...prev]);
         });
       };
 
@@ -154,7 +155,7 @@ const ChatPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen text-base-content">
+    <div className="flex flex-col h-screen overflow-hidden text-base-content">
       <Navbar />
 
       <div className="flex flex-1 overflow-hidden">
