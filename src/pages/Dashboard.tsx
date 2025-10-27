@@ -80,7 +80,7 @@ const Dashboard: React.FC = () => {
                 className="w-16 h-16 rounded-full object-cover border border-base-300"
               />
               <div>
-                <h1 className="text-3xl font-bold text-primary">Cześć, {username}! 👋</h1>
+                <h1 className="text-3xl font-bold text-neutral-content">Cześć, <span className="text-primary">{username}</span> 👋</h1>
                 <p className="text-neutral-content">
                   Masz{" "}
                   <span className="font-semibold text-secondary">
@@ -134,7 +134,7 @@ const Dashboard: React.FC = () => {
 
                 return (
                   <li key={n.id}>
-                    <span className="opacity-80">{emoji} {messageWithoutUsername}</span> <strong className="text-secondary">{username}</strong>
+                    <span>{emoji} {messageWithoutUsername}</span> <strong className="text-secondary">{username}</strong>
                   </li>
                 );
               })}
