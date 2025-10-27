@@ -11,11 +11,13 @@ import EditProfile from './pages/EditProfile'
 import EditPhotos from './pages/EditPhotos';
 import Matches from './pages/Matches';
 import UserStats from './pages/UserStats';
+import PrivateRoute from './components/PrivateRoute';
 
 const titleMap: Record<string, string> = {
   '/': 'Witamy! | svelove',
   '/login': 'Logowanie | svelove',
   '/register': 'Rejestracja | svelove',
+  
   '/dashboard': 'Strona główna | svelove',
   '/chat': 'Czat | svelove',
   '/profile': "Profil | svelove",
@@ -43,13 +45,16 @@ function App() {
         <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard/>} />
-        <Route path="/chat/:matchId?" element={<Chat />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/profile/edit" element={<EditProfile />} />
-        <Route path="/profile/edit/photos" element={<EditPhotos />} />
-        <Route path='/matches' element={<Matches/>} />
-        <Route path="/profile/stats" element={<UserStats />} />
+
+        <Route element={<PrivateRoute />}>
+          <Route path="/dashboard" element={<Dashboard/>} />
+          <Route path="/chat/:matchId?" element={<Chat />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/edit" element={<EditProfile />} />
+          <Route path="/profile/edit/photos" element={<EditPhotos />} />
+          <Route path='/matches' element={<Matches/>} />
+          <Route path="/profile/stats" element={<UserStats />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
