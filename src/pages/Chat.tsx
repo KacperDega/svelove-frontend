@@ -163,7 +163,11 @@ const ChatPage: React.FC = () => {
         <div className="hidden md:flex flex-col w-1/5 border-r border-secondary overflow-y-auto">
           {loadingConversations ? (
             <div className="p-4 text-base-content/70 flex items-center justify-center flex-1">Ładowanie...</div>
-          ) : (
+          ) : conversations.length === 0 ? (
+            <div className="p-4 text-base-content/70 flex items-center justify-center flex-1 text-center">
+              Brak konwersacji.
+            </div>
+          ) : ( 
             conversations.map((conv) => (
               <button
                 key={conv.matchId}
