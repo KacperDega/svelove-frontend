@@ -172,11 +172,11 @@ const ChatPage: React.FC = () => {
                   activeConversation?.matchId === conv.matchId ? "bg-base-300" : ""
                 }`}
               >
-                <img
-                  src={conv.photoUrl}
-                  alt={conv.otherUserName}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
+                <div className="avatar">
+                  <div className="w-10 rounded-full">
+                    <img src={conv.photoUrl} alt={conv.otherUserName} />
+                  </div>
+                </div>
                 <div className="flex flex-col overflow-hidden">
                   <p
                     className={`text-primary truncate ${
