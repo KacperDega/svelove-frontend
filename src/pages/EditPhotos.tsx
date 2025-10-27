@@ -95,7 +95,7 @@ const EditPhotos = () => {
                 >
                   <img
                     src={imageSrc}
-                    className="w-full object-cover h-[300px] sm:h-[400px]"
+                    className="w-full object-cover h-[500px]"
                     alt={`Zdjęcie ${index + 1}`}
                   />
                   <div className="absolute flex justify-between transform -translate-y-1/2 left-4 right-4 top-1/2">

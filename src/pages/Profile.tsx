@@ -68,7 +68,7 @@ const Profile: React.FC = () => {
                 key={index}
                 className="carousel-item relative w-full"
               >
-                <img src={url} className="w-full object-cover h-[500px] sm:h-[600px]" alt={`Zdjęcie ${index + 1}`} />
+                <img src={url} className="w-full object-cover h-[750px]" alt={`Zdjęcie ${index + 1}`} />
                 <div className="absolute flex justify-between transform -translate-y-1/2 left-4 right-4 top-1/2">
                   <a
                     href={`#slide${(index - 1 + user.photoUrls.length) % user.photoUrls.length}`}
