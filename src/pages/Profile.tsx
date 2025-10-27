@@ -90,23 +90,23 @@ const Profile: React.FC = () => {
           {/* dane */}
           <div className="card bg-neutral shadow-xl border border-secondary h-full flex flex-col justify-between">
             <div className="card-body flex flex-col h-full gap-4">
-              <h2 className="card-title text-3xl font-bold text-primary">{user.username}</h2>
+              <h2 className="card-title text-3xl font-bold text-accent">{user.username}</h2>
 
               <div className="text-neutral-content space-y-2">
-                <p><span className="font-semibold text-secondary">Login:</span> {user.login}</p>
-                <p><span className="font-semibold text-secondary">Płeć:</span> {user.sex}</p>
-                <p><span className="font-semibold text-secondary">Wiek:</span> {user.age}</p>
-                <p><span className="font-semibold text-secondary">Preferencje:</span> {translatePreference(user.preference)}</p>
-                <p><span className="font-semibold text-secondary">Zakres wieku:</span> {user.age_min} - {user.age_max}</p>
-                <p><span className="font-semibold text-secondary">Lokalizacja:</span> {user.city}</p>
-                <p><span className="font-semibold text-secondary">Opis:</span> {user.description}</p>
+                <p><span className="font-semibold text-primary">Login:</span> {user.login}</p>
+                <p><span className="font-semibold text-primary">Płeć:</span> {user.sex}</p>
+                <p><span className="font-semibold text-primary">Wiek:</span> {user.age}</p>
+                <p><span className="font-semibold text-primary">Preferencje:</span> {translatePreference(user.preference)}</p>
+                <p><span className="font-semibold text-primary">Zakres wieku:</span> {user.age_min} - {user.age_max}</p>
+                <p><span className="font-semibold text-primary">Lokalizacja:</span> {user.city}</p>
+                <p><span className="font-semibold text-primary">Opis:</span> {user.description}</p>
               </div>
 
               <div>
-                <p className="font-semibold text-secondary">Zainteresowania:</p>
+                <p className="font-semibold text-primary">Zainteresowania:</p>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {user.hobbies.map((hobby) => (
-                    <span key={hobby} className="badge badge-primary badge-outline">
+                    <span key={hobby} className="badge badge-secondary badge-outline">
                       {hobby}
                     </span>
                   ))}
