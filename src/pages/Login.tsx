@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { login } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
-import logo from "../assets/logo1.svg";
 import ErrorPopup from "../components/ErrorPopup";
 import Header from "../components/Header";
 

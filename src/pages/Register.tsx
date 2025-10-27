@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { register, login } from "../api/auth";
 import { useNavigate } from "react-router-dom";
 import "../index.css";
-import logo from "../assets/logo1.svg";
 import { Preference, Sex } from "../types/enums";
 import Select from "react-select";
 import PhotoUploader from "../components/PhotoUploader";
