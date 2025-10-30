@@ -1,46 +1,96 @@
-# Getting Started with Create React App
+# Svelove Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<p align="center">
+  <img src="src/assets/svelove-logo.svg" alt="Svelove Logo" width="400"/>
+</p>
 
-## Available Scripts
+<p align="center">
+  <strong>The frontend for Svelove, a modern dating application.</strong>
+</p>
 
-In the project directory, you can run:
+---
+
+## 🚀 About Svelove
+
+Svelove is a dating application designed to connect people based on shared interests and preferences. This repository contains the source code for the frontend, built with React and TypeScript. It provides a responsive and engaging user experience for discovering and connecting with potential matches.
+
+## ✨ Key Features
+
+- **User Authentication**: Secure registration and login functionality.
+- **Profile Management**: Create, view, and edit user profiles with detailed information.
+- **Photo Uploads**: Easily upload and manage profile pictures.
+- **Matching**: Browse and connect with potential matches.
+- **Real-Time Chat**: Engage in live conversations with your matches.
+- **Notifications**: Receive real-time notifications for new messages and matches.
+- **User Statistics**: View insightful statistics about your activity.
+
+## 🛠️ Technologies Used
+
+- **Framework**: [React](https://reactjs.org/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Routing**: [React Router](https://reactrouter.com/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) with [daisyUI](https://daisyui.com/)
+- **Real-Time Communication**: [StompJS](https://stomp-js.github.io/) and [SockJS](https://github.com/sockjs/sockjs-client) for WebSocket communication.
+- **Drag & Drop**: [@hello-pangea/dnd](https://github.com/hello-pangea/dnd) for intuitive drag-and-drop interfaces.
+- **State Management**: React Hooks & Context API.
+
+## 📦 Getting Started
+
+Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm (v8 or higher)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/KacperDega/svelove-frontend.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd svelove-frontend
+   ```
+3. Install the dependencies:
+   ```bash
+   npm install
+   ```
+
+## 📜 Available Scripts
+
+In the project directory, you can run the following commands:
 
 ### `npm start`
 
-Runs the app in the development mode.\
+Runs the app in development mode.
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.\
+The page will reload if you make edits.
 You will also see any lint errors in the console.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in interactive watch mode.
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
+Builds the app for production to the `build` folder.
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🌐 API Integration
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The frontend is configured to work with the API from the backend repository. The base URL for the API is set in `src/api/apiRequest.ts` and defaults to `http://localhost:8080`.
 
-### `npm run eject`
+## 📁 Folder Structure
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+```
+src/
+├── api/           # API request logic
+├── assets/        # Images and static assets
+├── components/    # Reusable React components
+├── pages/         # Main pages of the application
+├── types/         # TypeScript type definitions
+└── utils/         # Utility functions
+```
