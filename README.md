@@ -5,14 +5,14 @@
 </p>
 
 <p align="center">
-  <strong>The frontend for Svelove, a modern dating application.</strong>
+  <strong>The frontend for Svelove, a modern dating application for the Polish market.</strong>
 </p>
 
 ---
 
 ## 🚀 About Svelove
 
-Svelove is a dating application designed to connect people based on shared interests and preferences. This repository contains the source code for the frontend, built with React and TypeScript. It provides a responsive and engaging user experience for discovering and connecting with potential matches.
+Svelove is a dating application for the Polish market, designed to connect people based on shared interests and preferences. This repository contains the source code for the frontend, built with React and TypeScript. It provides a responsive and engaging user experience for discovering and connecting with potential matches.
 
 ## ✨ Key Features
 
@@ -22,6 +22,7 @@ Svelove is a dating application designed to connect people based on shared inter
 - **Matching**: Browse and connect with potential matches.
 - **Real-Time Chat**: Engage in live conversations with your matches.
 - **Notifications**: Receive real-time notifications for new messages and matches.
+- **Target Audience**: The user interface is in Polish, and the application is designed for users in Poland, allowing city selection from all Polish cities.
 - **User Statistics**: View insightful statistics about your activity.
 
 ## 🛠️ Technologies Used
